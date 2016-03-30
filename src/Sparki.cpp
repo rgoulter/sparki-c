@@ -139,16 +139,16 @@ void SparkiClass::begin( ) {
     // Setup the SPI bus for the shift register
     // !!! Need to remove the essential functions from the SPI Library,
     // !!! and include in the main code
-    SPI.begin();
-    SPI.setClockDivider(SPI_CLOCK_DIV2);
+    SPI_begin();
+    SPI_setClockDivider(SPI_CLOCK_DIV2);
 
     // Set the shift-register clock select pin to output
     DDRD |= (1<<5);
 
     // Clear out the shift registers
     PORTD &= 0xDF;    // pull PD5 low
-    SPI.transfer(shift_outputs[1]);
-    SPI.transfer(shift_outputs[0]);
+    SPI_transfer(shift_outputs[1]);
+    SPI_transfer(shift_outputs[0]);
     PORTD |= 0x20;    // pull PD5 high to latch in spi transfers
 
 
@@ -1038,8 +1038,8 @@ ISR(TIMER4_COMPA_vect)          // interrupt service routine that wraps a user d
 
         //output values to shift registers
         PORTD &= ~(1<<5);    // pull PD5 (shift-register latch) low
-        SPI.transfer(shift_outputs[1]);
-        SPI.transfer(shift_outputs[0]);
+        SPI_transfer(shift_outputs[1]);
+        SPI_transfer(shift_outputs[0]);
         PORTD |= (1<<5);    // pull PD5 (shift-register latch) high
     }
 }
