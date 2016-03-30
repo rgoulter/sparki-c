@@ -5,6 +5,7 @@
 #include <limits.h>
 #include <Arduino.h>
 
+#include <avr/eeprom.h>
 #include <avr/pgmspace.h>
 #include <util/delay.h>
 #include <stdlib.h>
@@ -24,8 +25,6 @@ volatile float zAxisAccel;
 // variables for the magnetometer
 volatile uint8_t mag_buffer[RawMagDataLength];
 #endif
-
-#include "SparkiEEPROM.h"
 
 static int8_t step_dir[3];                 // -1 = ccw, 1 = cw
 
@@ -112,14 +111,14 @@ void SparkiClass::begin( ) {
     // Setup Servo
     pinMode(SERVO, OUTPUT);
     //startServoTimer();
-    if( EEPROM.read(0) > 127) {
-        servo_deg_offset = -256+EEPROM.read(0);
+    if( eeprom_read_byte((unsigned char *) 0) > 127) {
+        servo_deg_offset = -256+eeprom_read_byte((unsigned char *) 0);
     }
     else{
-        servo_deg_offset = EEPROM.read(0);
+        servo_deg_offset = eeprom_read_byte((unsigned char *) 0);
     }
 
-    if( EEPROM.read(1) == 88) {
+    if( eeprom_read_byte((unsigned char *) 1) == 88) {
         LCD_TYPE = 1; // large LCD
     }
     else{
