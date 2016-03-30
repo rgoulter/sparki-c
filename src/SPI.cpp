@@ -23,13 +23,13 @@ void SPIClass::begin() {
   pinMode(SCK, OUTPUT);
   pinMode(MOSI, OUTPUT);
   pinMode(SS, OUTPUT);
-  
+
   digitalWrite(SCK, LOW);
   digitalWrite(MOSI, LOW);
   digitalWrite(SS, HIGH);
 
-  // Warning: if the SS pin ever becomes a LOW INPUT then SPI 
-  // automatically switches to Slave, so the data direction of 
+  // Warning: if the SS pin ever becomes a LOW INPUT then SPI
+  // automatically switches to Slave, so the data direction of
   // the SS pin MUST be kept as OUTPUT.
   SPCR |= _BV(MSTR);
   SPCR |= _BV(SPE);
