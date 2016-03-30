@@ -6,7 +6,7 @@
 ARDUINO_DIR = /usr/share/arduino
 AVR_BIN_DIR = $(ARDUINO_DIR)/hardware/tools/avr/bin
 AVR_DIR     = $(ARDUINO_DIR)/hardware/arduino/avr
-SPARKI_DIR  = /home/richard/Arduino/libraries/Sparki/src
+SPARKI_DIR  = src
 
 INCLUDES = "-I$(AVR_DIR)/cores/arduino" \
            "-I$(AVR_DIR)/variants/leonardo"
