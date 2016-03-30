@@ -23,8 +23,8 @@ BUILD_DIR = build
 
 
 SPARKI_C_SRCS = CSPI.c
-SPARKI_C_OBJS = $(SPARKI__CSRCS:.c=.c.o)
-BUILT_SPARKI_C_OBJS = $(foreach obj, $(SPARKI_CPP_OBJS), $(BUILD_DIR)/$(obj))
+SPARKI_C_OBJS = $(SPARKI_C_SRCS:.c=.c.o)
+BUILT_SPARKI_C_OBJS = $(foreach obj, $(SPARKI_C_OBJS), $(BUILD_DIR)/$(obj))
 
 SPARKI_CPP_SRCS = Sparki.cpp SparkiWire.cpp
 SPARKI_CPP_OBJS = $(SPARKI_CPP_SRCS:.cpp=.cpp.o)
@@ -57,7 +57,7 @@ $(BUILD_DIR)/sparki.a($(BUILD_DIR)/%.c.o): $(BUILD_DIR)/%.c.o
 $(BUILD_DIR)/sparki.a($(BUILD_DIR)/%.cpp.o): $(BUILD_DIR)/%.cpp.o
 	"$(AVR_BIN_DIR)/avr-ar" rcs "$(BUILD_DIR)/sparki.a" $<
 
-$(BUILD_DIR)/sparki.a: $(BUILD_DIR)/sparki.a($(BUILT_SPARKI_CPP_OBJS))
+$(BUILD_DIR)/sparki.a: $(BUILD_DIR)/sparki.a($(BUILT_SPARKI_C_OBJS)) $(BUILD_DIR)/sparki.a($(BUILT_SPARKI_CPP_OBJS))
 
 
 
