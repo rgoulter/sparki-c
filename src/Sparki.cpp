@@ -9,7 +9,7 @@
 #include <avr/pgmspace.h>
 #include <util/delay.h>
 #include <stdlib.h>
-#include <SPI.h>
+#include "CSPI.h"
 
 
 #ifndef NO_ACCEL

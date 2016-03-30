@@ -22,10 +22,13 @@ BUILD_DIR = build
 
 
 
-SPARKI_SRCS = SPI.cpp Sparki.cpp SparkiWire.cpp
-SPARKI_OBJS = $(SPARKI_SRCS:.cpp=.cpp.o)
-BUILT_SPARKI_C_OBJS =
-BUILT_SPARKI_CPP_OBJS = $(foreach obj, $(SPARKI_OBJS), $(BUILD_DIR)/$(obj))
+SPARKI_C_SRCS = CSPI.c
+SPARKI_C_OBJS = $(SPARKI__CSRCS:.c=.c.o)
+BUILT_SPARKI_C_OBJS = $(foreach obj, $(SPARKI_CPP_OBJS), $(BUILD_DIR)/$(obj))
+
+SPARKI_CPP_SRCS = Sparki.cpp SparkiWire.cpp
+SPARKI_CPP_OBJS = $(SPARKI_CPP_SRCS:.cpp=.cpp.o)
+BUILT_SPARKI_CPP_OBJS = $(foreach obj, $(SPARKI_CPP_OBJS), $(BUILD_DIR)/$(obj))
 
 
 
@@ -40,6 +43,9 @@ $(BUILD_DIR)/:
 
 
 # Sparki
+$(BUILD_DIR)/%.c.o: $(SPARKI_DIR)/%.c $(BUILD_DIR)/
+	"$(AVR_BIN_DIR)/avr-gcc" $(CC_FLAGS) $(ARDUINO_FLAGS) "-I$(SPARKI_DIR)" $< -o $@
+
 $(BUILD_DIR)/%.cpp.o: $(SPARKI_DIR)/%.cpp $(BUILD_DIR)/
 	"$(AVR_BIN_DIR)/avr-g++" $(CPP_FLAGS) $(ARDUINO_FLAGS) "-I$(SPARKI_DIR)" $< -o $@
 
