@@ -22,7 +22,7 @@ BUILD_DIR = build
 
 
 
-SPARKI_SRCS = Radio.cpp SPI.cpp Sparki.cpp SparkiWire.cpp
+SPARKI_SRCS = SPI.cpp Sparki.cpp SparkiWire.cpp
 SPARKI_OBJS = $(SPARKI_SRCS:.cpp=.cpp.o)
 BUILT_SPARKI_C_OBJS =
 BUILT_SPARKI_CPP_OBJS = $(foreach obj, $(SPARKI_OBJS), $(BUILD_DIR)/$(obj))
