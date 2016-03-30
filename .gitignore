@@ -4,6 +4,8 @@ examples/
 ### C++ ###
 # Compiled Object files
 *.o
+*.d
+build/
 
 # Compiled Static libraries
 *.a
