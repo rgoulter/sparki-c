@@ -8,6 +8,7 @@ AVR_BIN_DIR = $(ARDUINO_DIR)/hardware/tools/avr/bin
 AVR_DIR     = $(ARDUINO_DIR)/hardware/arduino/avr
 SPARKI_DIR  = src
 
+SPARKI_FLAGS = -DNO_ACCEL -DNO_MAG
 INCLUDES = "-I$(AVR_DIR)/cores/arduino" \
            "-I$(AVR_DIR)/variants/leonardo"
 ARDUINO_FLAGS = -mmcu=atmega32u4 -DF_CPU=16000000L -DARDUINO=10608 \
@@ -15,18 +16,21 @@ ARDUINO_FLAGS = -mmcu=atmega32u4 -DF_CPU=16000000L -DARDUINO=10608 \
                 -DUSB_VID=0x2341 -DUSB_PID=0x8036 \
                 '-DUSB_MANUFACTURER="Unknown"' '-DUSB_PRODUCT="Arduino Leonardo"' \
                 $(INCLUDES)
-CC_FLAGS  = -c -g -Os -w -std=gnu11 -ffunction-sections -fdata-sections -MMD
+CC_FLAGS  = -c -g -Os -w -std=gnu11 -ffunction-sections -fdata-sections -MMD $(SPARKI_FLAGS)
 CPP_FLAGS = -c -g -Os -w -std=gnu++11 -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD
 
 BUILD_DIR = build
 
 
 
-SPARKI_C_SRCS = CSPI.c
+# Accel,Mag,LCD,Servo,IR,PingSingle,Motor,Beep,IRReflectance,RGB
+SPARKI_C_PARTS = LCD Servo IR PingSingle Motor Beep IRReflectance RGB
+SPARKI_C_SRCS = CSPI.c Sparki.c $(foreach part, $(SPARKI_C_PARTS), SparkiLib$(part).c)
 SPARKI_C_OBJS = $(SPARKI_C_SRCS:.c=.c.o)
 BUILT_SPARKI_C_OBJS = $(foreach obj, $(SPARKI_C_OBJS), $(BUILD_DIR)/$(obj))
 
-SPARKI_CPP_SRCS = Sparki.cpp SparkiWire.cpp
+# SparkiWire.cpp
+SPARKI_CPP_SRCS =
 SPARKI_CPP_OBJS = $(SPARKI_CPP_SRCS:.cpp=.cpp.o)
 BUILT_SPARKI_CPP_OBJS = $(foreach obj, $(SPARKI_CPP_OBJS), $(BUILD_DIR)/$(obj))
 

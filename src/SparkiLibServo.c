@@ -1,3 +1,28 @@
+#include "Sparki.h"
+
+// values for the servo
+volatile int8_t servo_deg_offset = 0;
+
+
+void begin_servo() {
+    if( eeprom_read_byte((unsigned char *) 0) > 127) {
+        servo_deg_offset = -256+eeprom_read_byte((unsigned char *) 0);
+    }
+    else{
+        servo_deg_offset = eeprom_read_byte((unsigned char *) 0);
+    }
+
+    // keep offset from going too off if EEPROM corrupted
+    if (servo_deg_offset > MAX_SERVO_OFFSET){
+        servo_deg_offset = 0;
+    }
+    if (servo_deg_offset < -MAX_SERVO_OFFSET){
+        servo_deg_offset = 0;
+    }
+
+    //servo(SERVO_CENTER);
+}
+
 void sparki_startServoTimer(){
     char oldSREG = SREG;
     noInterrupts();                                       // Disable interrupts for 16 bit register access
@@ -15,7 +40,7 @@ void sparki_startServoTimer(){
 void sparki_servo(int deg)
 {
     sparki_startServoTimer();
-    int duty = int((((float(-deg+servo_deg_offset)*2000/180)+1500)/20000)*1024); // compute the duty cycle for the servo
+    int duty = (int)(((((float)(-deg+servo_deg_offset)*2000/180)+1500)/20000)*1024); // compute the duty cycle for the servo
     //0 = 26
     //180 = 128
 

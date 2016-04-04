@@ -55,10 +55,8 @@ volatile uint8_t currentPulse = 0;
 volatile uint8_t haltIRRead = 0;
 
 
-// values for the servo
-volatile int8_t servo_deg_offset = 0;
-
 //R These should be in the header at some point.
+void begin_servo(void);
 void isr_irreflectance(int *);
 
 // SparkiClass sparki;
@@ -83,13 +81,6 @@ void sparki_begin( ) {
     pinMode(SERVO, OUTPUT);
     //startServoTimer();
 
-    if( eeprom_read_byte((unsigned char *) 0) > 127) {
-        servo_deg_offset = -256+eeprom_read_byte((unsigned char *) 0);
-    }
-    else{
-        servo_deg_offset = eeprom_read_byte((unsigned char *) 0);
-    }
-
     if( eeprom_read_byte((unsigned char *) 1) == 88) {
         LCD_TYPE = 1; // large LCD
     }
@@ -97,15 +88,7 @@ void sparki_begin( ) {
         LCD_TYPE = 0; // small LCD
     }
 
-    // keep offset from going too off if EEPROM corrupted
-    if (servo_deg_offset > MAX_SERVO_OFFSET){
-        servo_deg_offset = 0;
-    }
-    if (servo_deg_offset < -MAX_SERVO_OFFSET){
-        servo_deg_offset = 0;
-    }
-
-    //servo(SERVO_CENTER);
+    begin_servo();
 
 
     // Setup the SPI bus for the shift register
