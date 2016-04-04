@@ -7,7 +7,7 @@ static volatile uint8_t RGB_vals[3];
 static volatile uint16_t RGB_timer;
 
 // TIMER4_COMPA_vect ISR
-void isr_RGB(int *shift_outputs) {
+void isr_RGB(volatile uint8_t *shift_outputs) {
     if(RGB_timer < RGB_vals[0]){ // update Red led
         shift_outputs[RGB_SHIFT] |= RGB_R;
     }

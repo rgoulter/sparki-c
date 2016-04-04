@@ -51,7 +51,7 @@ void begin_motor() {
 }
 
 
-void isr_motor(int *shift_outputs) {
+void isr_motor(volatile uint8_t *shift_outputs) {
     //   Determine what state the stepper coils are in
     for(byte motor=0; motor<3; motor++){
         if( remainingSteps[motor] > 1 ){ // check if finished stepping

@@ -1,5 +1,6 @@
 //R XXX Would love to be more specific here.
 #include "Sparki.h"
+#include <avr/eeprom.h>
 
 /***********************************************************************************
   Display Library
@@ -7,7 +8,7 @@
 
 uint8_t pixel_color = WHITE;
 
-extern uint8_t LCD_TYPE = 0; //R needed in the begin()
+extern uint8_t LCD_TYPE; //R needed in the begin() for eeprom.
 
 #define ST7565_STARTBYTES 1
 
@@ -462,30 +463,30 @@ void sparki_setPixelColor(uint8_t color){
 
 void sparki_drawBitmap(uint8_t x, uint8_t y,
         const uint8_t *bitmap, uint8_t w, uint8_t h) {
-    ensure_lcd_init();
+    sparki_ensure_lcd_init();
     for (uint8_t j=0; j<h; j++) {
         for (uint8_t i=0; i<w; i++ ) {
             if (pgm_read_byte(bitmap + i + (j/8)*w) & _BV(j%8)) {
-                my_setpixel(x+i, y+j, pixel_color);
+                sparki_my_setpixel(x+i, y+j, pixel_color);
             }
         }
     }
 
-    updateBoundingBox(x, y, x+w, y+h);
+    sparki_updateBoundingBox(x, y, x+w, y+h);
 }
 
 void sparki_moveUpLine() {
-    ensure_lcd_init();
+    sparki_ensure_lcd_init();
     memmove(st7565_buffer, st7565_buffer+128, 1024-128);
     memset(st7565_buffer+1024-128,0,128);
-    updateBoundingBox(0, 0, LCDWIDTH-1, LCDHEIGHT-1);
+    sparki_updateBoundingBox(0, 0, LCDWIDTH-1, LCDHEIGHT-1);
 }
 
 uint8_t print_char_x = 0;
 uint8_t print_line_y = 0;
 
 void sparki_textWrite(const char* buffer, uint16_t len) {
-    ensure_lcd_init();
+    sparki_ensure_lcd_init();
     for (uint16_t i=0;i<len;i++){
         if(buffer[i] == '\n'){
             print_line_y++;
@@ -493,7 +494,7 @@ void sparki_textWrite(const char* buffer, uint16_t len) {
         }
         else{
             if(buffer[i] != '\r'){
-                drawChar(print_char_x, print_line_y, buffer[i]);
+                sparki_drawChar(print_char_x, print_line_y, buffer[i]);
                 print_char_x += 6; // 6 pixels wide
                 if (print_char_x + 6 >= LCDWIDTH) {
                     print_char_x = 0;    // ran out of this line
@@ -503,7 +504,7 @@ void sparki_textWrite(const char* buffer, uint16_t len) {
         }
 
         if (print_line_y >= (LCDHEIGHT/8)) {
-            moveUpLine();
+            sparki_moveUpLine();
             print_line_y--;
         }
     }
@@ -512,9 +513,9 @@ void sparki_textWrite(const char* buffer, uint16_t len) {
 
 
 void sparki_drawString(uint8_t x, uint8_t line, char *c) {
-    ensure_lcd_init();
+    sparki_ensure_lcd_init();
     while (c[0] != 0) {
-        drawChar(x, line, c[0]);
+        sparki_drawChar(x, line, c[0]);
         c++;
         x += 6; // 6 pixels wide
         if (x + 6 >= LCDWIDTH) {
@@ -522,19 +523,19 @@ void sparki_drawString(uint8_t x, uint8_t line, char *c) {
             line++;
         }
         if (line >= (LCDHEIGHT/8)) {
-            moveUpLine();
+            sparki_moveUpLine();
             line--;
         }
     }
 }
 
 void sparki_drawString_P(uint8_t x, uint8_t line, const char *str) {
-    ensure_lcd_init();
+    sparki_ensure_lcd_init();
     while (1) {
         char c = pgm_read_byte(str++);
         if (! c)
             return;
-        drawChar(x, line, c);
+        sparki_drawChar(x, line, c);
         x += 6; // 6 pixels wide
         if (x + 6 >= LCDWIDTH) {
             x = 0;    // ran out of this line
@@ -546,18 +547,18 @@ void sparki_drawString_P(uint8_t x, uint8_t line, const char *str) {
 }
 
 void  sparki_drawChar(uint8_t x, uint8_t line, char c) {
-    ensure_lcd_init();
+    sparki_ensure_lcd_init();
     for (uint8_t i =0; i<5; i++ ) {
         st7565_buffer[x + (line*128) ] = pgm_read_byte(font+(c*5)+i);
         x++;
     }
 
-    updateBoundingBox(0, line*8, x+5, line*8 + 8);
+    sparki_updateBoundingBox(0, line*8, x+5, line*8 + 8);
 }
 
 // bresenham's algorithm - thx wikpedia
 void sparki_drawLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1) {
-    ensure_lcd_init();
+    sparki_ensure_lcd_init();
     uint8_t steep = abs(y1 - y0) > abs(x1 - x0);
     if (steep) {
         swap(x0, y0);
@@ -570,7 +571,7 @@ void sparki_drawLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1) {
     }
 
     // much faster to put the test here, since we've already sorted the points
-    updateBoundingBox(x0, y0, x1, y1);
+    sparki_updateBoundingBox(x0, y0, x1, y1);
 
     uint8_t dx, dy;
     dx = x1 - x0;
@@ -586,9 +587,9 @@ void sparki_drawLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1) {
 
     for (; x0<=x1; x0++) {
         if (steep) {
-            my_setpixel(y0, x0, pixel_color);
+            sparki_my_setpixel(y0, x0, pixel_color);
         } else {
-            my_setpixel(x0, y0, pixel_color);
+            sparki_my_setpixel(x0, y0, pixel_color);
         }
         err -= dy;
         if (err < 0) {
@@ -600,38 +601,38 @@ void sparki_drawLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1) {
 
 // filled rectangle
 void sparki_drawRectFilled(uint8_t x, uint8_t y, uint8_t w, uint8_t h) {
-    ensure_lcd_init();
+    sparki_ensure_lcd_init();
 
     // stupidest version - just pixels - but fast with internal buffer!
     for (uint8_t i=x; i<x+w; i++) {
         for (uint8_t j=y; j<y+h; j++) {
-            my_setpixel(i, j, pixel_color);
+            sparki_my_setpixel(i, j, pixel_color);
         }
     }
 
-    updateBoundingBox(x, y, x+w, y+h);
+    sparki_updateBoundingBox(x, y, x+w, y+h);
 }
 
 // draw a rectangle
 void sparki_drawRect(uint8_t x, uint8_t y, uint8_t w, uint8_t h) {
-    ensure_lcd_init();
+    sparki_ensure_lcd_init();
     // stupidest version - just pixels - but fast with internal buffer!
     for (uint8_t i=x; i<x+w; i++) {
-        my_setpixel(i, y, pixel_color);
-        my_setpixel(i, y+h-1, pixel_color);
+        sparki_my_setpixel(i, y, pixel_color);
+        sparki_my_setpixel(i, y+h-1, pixel_color);
     }
     for (uint8_t i=y; i<y+h; i++) {
-        my_setpixel(x, i, pixel_color);
-        my_setpixel(x+w-1, i, pixel_color);
+        sparki_my_setpixel(x, i, pixel_color);
+        sparki_my_setpixel(x+w-1, i, pixel_color);
     }
 
-    updateBoundingBox(x, y, x+w, y+h);
+    sparki_updateBoundingBox(x, y, x+w, y+h);
 }
 
 // draw a circle outline
 void sparki_drawCircle(uint8_t x0, uint8_t y0, uint8_t r) {
-    ensure_lcd_init();
-    updateBoundingBox(x0-r, y0-r, x0+r, y0+r);
+    sparki_ensure_lcd_init();
+    sparki_updateBoundingBox(x0-r, y0-r, x0+r, y0+r);
 
     int8_t f = 1 - r;
     int8_t ddF_x = 1;
@@ -639,10 +640,10 @@ void sparki_drawCircle(uint8_t x0, uint8_t y0, uint8_t r) {
     int8_t x = 0;
     int8_t y = r;
 
-    my_setpixel(x0, y0+r, pixel_color);
-    my_setpixel(x0, y0-r, pixel_color);
-    my_setpixel(x0+r, y0, pixel_color);
-    my_setpixel(x0-r, y0, pixel_color);
+    sparki_my_setpixel(x0, y0+r, pixel_color);
+    sparki_my_setpixel(x0, y0-r, pixel_color);
+    sparki_my_setpixel(x0+r, y0, pixel_color);
+    sparki_my_setpixel(x0-r, y0, pixel_color);
 
     while (x<y) {
         if (f >= 0) {
@@ -654,22 +655,22 @@ void sparki_drawCircle(uint8_t x0, uint8_t y0, uint8_t r) {
         ddF_x += 2;
         f += ddF_x;
 
-        my_setpixel(x0 + x, y0 + y, pixel_color);
-        my_setpixel(x0 - x, y0 + y, pixel_color);
-        my_setpixel(x0 + x, y0 - y, pixel_color);
-        my_setpixel(x0 - x, y0 - y, pixel_color);
+        sparki_my_setpixel(x0 + x, y0 + y, pixel_color);
+        sparki_my_setpixel(x0 - x, y0 + y, pixel_color);
+        sparki_my_setpixel(x0 + x, y0 - y, pixel_color);
+        sparki_my_setpixel(x0 - x, y0 - y, pixel_color);
 
-        my_setpixel(x0 + y, y0 + x, pixel_color);
-        my_setpixel(x0 - y, y0 + x, pixel_color);
-        my_setpixel(x0 + y, y0 - x, pixel_color);
-        my_setpixel(x0 - y, y0 - x, pixel_color);
+        sparki_my_setpixel(x0 + y, y0 + x, pixel_color);
+        sparki_my_setpixel(x0 - y, y0 + x, pixel_color);
+        sparki_my_setpixel(x0 + y, y0 - x, pixel_color);
+        sparki_my_setpixel(x0 - y, y0 - x, pixel_color);
 
     }
 }
 
 void sparki_drawCircleFilled(uint8_t x0, uint8_t y0, uint8_t r) {
-    ensure_lcd_init();
-    updateBoundingBox(x0-r, y0-r, x0+r, y0+r);
+    sparki_ensure_lcd_init();
+    sparki_updateBoundingBox(x0-r, y0-r, x0+r, y0+r);
 
     int8_t f = 1 - r;
     int8_t ddF_x = 1;
@@ -678,7 +679,7 @@ void sparki_drawCircleFilled(uint8_t x0, uint8_t y0, uint8_t r) {
     int8_t y = r;
 
     for (uint8_t i=y0-r; i<=y0+r; i++) {
-        my_setpixel(x0, i, pixel_color);
+        sparki_my_setpixel(x0, i, pixel_color);
     }
 
     while (x<y) {
@@ -692,18 +693,18 @@ void sparki_drawCircleFilled(uint8_t x0, uint8_t y0, uint8_t r) {
         f += ddF_x;
 
         for (uint8_t i=y0-y; i<=y0+y; i++) {
-            my_setpixel(x0+x, i, pixel_color);
-            my_setpixel(x0-x, i, pixel_color);
+            sparki_my_setpixel(x0+x, i, pixel_color);
+            sparki_my_setpixel(x0-x, i, pixel_color);
         }
         for (uint8_t i=y0-x; i<=y0+x; i++) {
-            my_setpixel(x0+y, i, pixel_color);
-            my_setpixel(x0-y, i, pixel_color);
+            sparki_my_setpixel(x0+y, i, pixel_color);
+            sparki_my_setpixel(x0-y, i, pixel_color);
         }
     }
 }
 
 void sparki_my_setpixel(uint8_t x, uint8_t y, uint8_t color) { // "private"
-    ensure_lcd_init();
+    sparki_ensure_lcd_init();
     if ((x >= LCDWIDTH) || (y >= LCDHEIGHT))
         return;
 
@@ -716,7 +717,7 @@ void sparki_my_setpixel(uint8_t x, uint8_t y, uint8_t color) { // "private"
 
 // the most basic function, set a single pixel
 void sparki_drawPixel(uint8_t x, uint8_t y) {
-    ensure_lcd_init();
+    sparki_ensure_lcd_init();
     if ((x >= LCDWIDTH) || (y >= LCDHEIGHT))
         return;
 
@@ -726,13 +727,13 @@ void sparki_drawPixel(uint8_t x, uint8_t y) {
     else
         st7565_buffer[x+ (y/8)*128] &= ~_BV(7-(y%8));
 
-    updateBoundingBox(x,y,x,y);
+    sparki_updateBoundingBox(x,y,x,y);
 }
 
 
 // the most basic function, get a single pixel
 uint8_t sparki_readPixel(uint8_t x, uint8_t y) {
-    ensure_lcd_init();
+    sparki_ensure_lcd_init();
     if ((x >= LCDWIDTH) || (y >= LCDHEIGHT))
         return 0;
 
@@ -748,7 +749,7 @@ void sparki_ensure_lcd_init() {
         print_char_x = 0;
         print_line_y = 0;
         memset(st7565_buffer, 0, 1024);
-        updateBoundingBox(0, 0, LCDWIDTH-1, LCDHEIGHT-1);
+        sparki_updateBoundingBox(0, 0, LCDWIDTH-1, LCDHEIGHT-1);
         //memset(st7565_buffer, 0, 1024);
 
 
@@ -762,19 +763,19 @@ void sparki_ensure_lcd_init() {
 }
 
 void sparki_beginDisplay() {
-    startSPI();
-    st7565_init();
-    st7565_command(CMD_DISPLAY_ON);
-    st7565_command(CMD_SET_ALLPTS_NORMAL);
-    st7565_set_brightness(0x00);
+    sparki_startSPI();
+    sparki_st7565_init();
+    sparki_st7565_command(CMD_DISPLAY_ON);
+    sparki_st7565_command(CMD_SET_ALLPTS_NORMAL);
+    sparki_st7565_set_brightness(0x00);
 }
 
 void sparki_progmem_lcd_logo(){
-    startSPI();
-    st7565_init();
-    st7565_command(CMD_DISPLAY_ON);
-    st7565_command(CMD_SET_ALLPTS_NORMAL);
-    st7565_set_brightness(0x00);
+    sparki_startSPI();
+    sparki_st7565_init();
+    sparki_st7565_command(CMD_DISPLAY_ON);
+    sparki_st7565_command(CMD_SET_ALLPTS_NORMAL);
+    sparki_st7565_set_brightness(0x00);
 
 
     uint8_t col, maxcol, p;
@@ -802,7 +803,7 @@ void sparki_progmem_lcd_logo(){
         }
 #endif
 
-        st7565_command(CMD_SET_PAGE | pagemap[p]);
+        sparki_st7565_command(CMD_SET_PAGE | pagemap[p]);
 
 
 #ifdef enablePartialUpdate
@@ -814,15 +815,15 @@ void sparki_progmem_lcd_logo(){
         maxcol = LCDWIDTH-1;
 #endif
 
-        st7565_command(CMD_SET_COLUMN_LOWER | ((col+ST7565_STARTBYTES) & 0xF0));
-        st7565_command(CMD_SET_COLUMN_UPPER | (((col+ST7565_STARTBYTES) >> 4) & 0x0F));
-        st7565_command(CMD_RMW);
+        sparki_st7565_command(CMD_SET_COLUMN_LOWER | ((col+ST7565_STARTBYTES) & 0xF0));
+        sparki_st7565_command(CMD_SET_COLUMN_UPPER | (((col+ST7565_STARTBYTES) >> 4) & 0x0F));
+        sparki_st7565_command(CMD_RMW);
 
         for(; col <= maxcol; col++) {
             //uart_putw_dec(col);
             //uart_putchar(' ');
             digitalWrite(LCD_A0, HIGH);
-            spiwrite(pgm_read_byte(sparki_logo + (128*p)+col));
+            sparki_spiwrite(pgm_read_byte(sparki_logo + (128*p)+col));
         }
     }
 
@@ -871,41 +872,41 @@ void sparki_st7565_init(void) {
     digitalWrite(LCD_RST, HIGH);
 
     // LCD bias select
-    st7565_command(CMD_SET_BIAS_7);
+    sparki_st7565_command(CMD_SET_BIAS_7);
     // ADC select
     if(LCD_TYPE == 0){ // Small LCD
-        st7565_command(CMD_SET_ADC_REVERSE);
+        sparki_st7565_command(CMD_SET_ADC_REVERSE);
     }
     if(LCD_TYPE == 1){ // Large LCD
-        st7565_command(CMD_SET_ADC_NORMAL);
+        sparki_st7565_command(CMD_SET_ADC_NORMAL);
     }
 
     // SHL select
-    st7565_command(CMD_SET_COM_NORMAL);
+    sparki_st7565_command(CMD_SET_COM_NORMAL);
     // Initial display line
-    st7565_command(CMD_SET_DISP_START_LINE);
+    sparki_st7565_command(CMD_SET_DISP_START_LINE);
 
     // turn on voltage converter (VC=1, VR=0, VF=0)
-    st7565_command(CMD_SET_POWER_CONTROL | 0x4);
+    sparki_st7565_command(CMD_SET_POWER_CONTROL | 0x4);
     // wait for 50% rising
     _delay_ms(50);
 
     // turn on voltage regulator (VC=1, VR=1, VF=0)
-    st7565_command(CMD_SET_POWER_CONTROL | 0x6);
+    sparki_st7565_command(CMD_SET_POWER_CONTROL | 0x6);
     // wait >=50ms
     _delay_ms(50);
 
     // turn on voltage follower (VC=1, VR=1, VF=1)
-    st7565_command(CMD_SET_POWER_CONTROL | 0x7);
+    sparki_st7565_command(CMD_SET_POWER_CONTROL | 0x7);
     // wait
     _delay_ms(10);
 
     // set lcd operating voltage (regulator resistor, ref voltage resistor)
     if(LCD_TYPE == 0){ // Small LCD
-        st7565_command(CMD_SET_RESISTOR_RATIO | 0x6);
+        sparki_st7565_command(CMD_SET_RESISTOR_RATIO | 0x6);
     }
     if(LCD_TYPE == 1){ // Large LCD
-        st7565_command(CMD_SET_RESISTOR_RATIO | 0x5);
+        sparki_st7565_command(CMD_SET_RESISTOR_RATIO | 0x5);
     }
 
     // initial display line
@@ -915,7 +916,7 @@ void sparki_st7565_init(void) {
 
     // set up a bounding box for screen updates
 
-    updateBoundingBox(0, 0, LCDWIDTH-1, LCDHEIGHT-1);
+    sparki_updateBoundingBox(0, 0, LCDWIDTH-1, LCDHEIGHT-1);
 }
 
 inline void sparki_spiwrite(uint8_t c) { // "private"
@@ -937,22 +938,22 @@ inline void sparki_spiwrite(uint8_t c) { // "private"
 void sparki_st7565_command(uint8_t c) {
     digitalWrite(LCD_A0, LOW);
 
-    spiwrite(c);
+    sparki_spiwrite(c);
 }
 
 void sparki_st7565_data(uint8_t c) {
     digitalWrite(LCD_A0, HIGH);
 
-    spiwrite(c);
+    sparki_spiwrite(c);
 }
 void sparki_st7565_set_brightness(uint8_t val) {
-    st7565_command(CMD_SET_VOLUME_FIRST);
-    st7565_command(CMD_SET_VOLUME_SECOND | (val & 0x3f));
+    sparki_st7565_command(CMD_SET_VOLUME_FIRST);
+    sparki_st7565_command(CMD_SET_VOLUME_SECOND | (val & 0x3f));
 }
 
 
 void sparki_updateLCD(void) {
-    ensure_lcd_init();
+    sparki_ensure_lcd_init();
     uint8_t col, maxcol, p;
 
     /*
@@ -978,7 +979,7 @@ void sparki_updateLCD(void) {
         }
 #endif
 
-        st7565_command(CMD_SET_PAGE | pagemap[p]);
+        sparki_st7565_command(CMD_SET_PAGE | pagemap[p]);
 
 
 #ifdef enablePartialUpdate
@@ -990,14 +991,14 @@ void sparki_updateLCD(void) {
         maxcol = LCDWIDTH-1;
 #endif
 
-        st7565_command(CMD_SET_COLUMN_LOWER | ((col+ST7565_STARTBYTES) & 0xF0));
-        st7565_command(CMD_SET_COLUMN_UPPER | (((col+ST7565_STARTBYTES) >> 4) & 0x0F));
-        st7565_command(CMD_RMW);
+        sparki_st7565_command(CMD_SET_COLUMN_LOWER | ((col+ST7565_STARTBYTES) & 0xF0));
+        sparki_st7565_command(CMD_SET_COLUMN_UPPER | (((col+ST7565_STARTBYTES) >> 4) & 0x0F));
+        sparki_st7565_command(CMD_RMW);
 
         for(; col <= maxcol; col++) {
             //uart_putw_dec(col);
             //uart_putchar(' ');
-            st7565_data(st7565_buffer[(128*p)+col]);
+            sparki_st7565_data(st7565_buffer[(128*p)+col]);
         }
     }
 
@@ -1011,11 +1012,11 @@ void sparki_updateLCD(void) {
 
 // clear everything
 void sparki_clearLCD(void) {
-    ensure_lcd_init();
+    sparki_ensure_lcd_init();
     print_char_x = 0;
     print_line_y = 0;
     memset(st7565_buffer, 0, 1024);
-    updateBoundingBox(0, 0, LCDWIDTH-1, LCDHEIGHT-1);
+    sparki_updateBoundingBox(0, 0, LCDWIDTH-1, LCDHEIGHT-1);
 }
 
 
@@ -1030,13 +1031,13 @@ void sparki_clear_display(void) {
            putstring_nl("");
            */
 
-        st7565_command(CMD_SET_PAGE | p);
+        sparki_st7565_command(CMD_SET_PAGE | p);
         for(c = 0; c < 129; c++) {
             //uart_putw_dec(c);
             //uart_putchar(' ');
-            st7565_command(CMD_SET_COLUMN_LOWER | (c & 0xf));
-            st7565_command(CMD_SET_COLUMN_UPPER | ((c >> 4) & 0xf));
-            st7565_data(0x0);
+            sparki_st7565_command(CMD_SET_COLUMN_LOWER | (c & 0xf));
+            sparki_st7565_command(CMD_SET_COLUMN_UPPER | ((c >> 4) & 0xf));
+            sparki_st7565_data(0x0);
         }
     }
 }

@@ -18,7 +18,7 @@ void begin_irreflectance() {
 }
 
 // shift_output1 for the shift_outputs[1]
-void isr_irreflectance(int *shift_output1) {
+void isr_irreflectance(volatile uint8_t *shift_output1) {
     if(irSwitch == 0){
         *shift_output1 &= 0xF7;
     }

@@ -32,8 +32,12 @@ static volatile uint8_t shift_outputs[3];      // tells if motor is running
 //R These should be in the header at some point.
 void begin_servo(void);
 void begin_motor(void);
-void isr_motor(int *);
-void isr_irreflectance(int *);
+void begin_beep(void);
+void begin_irreflectance(void);
+void isr_motor(volatile uint8_t *);
+void isr_irreflectance(volatile uint8_t *);
+void isr_RGB(volatile uint8_t *);
+
 
 // SparkiClass sparki;
 
@@ -90,8 +94,8 @@ void sparki_begin( ) {
 #ifdef NOLCD
     progmem_lcd_logo();
 #else
-    beginDisplay();
-    updateLCD();
+    sparki_beginDisplay();
+    sparki_updateLCD();
 #endif
 
 
@@ -169,7 +173,7 @@ ISR(TIMER4_COMPA_vect)          // interrupt service routine that wraps a user d
     shift_outputs[1] = 0x00;
 
     // Update the RGB leds
-    isr_RGB();
+    isr_RGB(shift_outputs);
 
     //R *** IR Reflectance ***
     // IR Detection Switch

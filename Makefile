@@ -16,7 +16,7 @@ ARDUINO_FLAGS = -mmcu=atmega32u4 -DF_CPU=16000000L -DARDUINO=10608 \
                 -DUSB_VID=0x2341 -DUSB_PID=0x8036 \
                 '-DUSB_MANUFACTURER="Unknown"' '-DUSB_PRODUCT="Arduino Leonardo"' \
                 $(INCLUDES)
-CC_FLAGS  = -c -g -Os -w -std=gnu11 -ffunction-sections -fdata-sections -MMD $(SPARKI_FLAGS)
+CC_FLAGS  = -c -g -Os -Wall -std=gnu11 -ffunction-sections -fdata-sections -MMD $(SPARKI_FLAGS)
 CPP_FLAGS = -c -g -Os -w -std=gnu++11 -fno-exceptions -ffunction-sections -fdata-sections -fno-threadsafe-statics -MMD
 
 BUILD_DIR = build
