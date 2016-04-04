@@ -71,11 +71,11 @@
 //const float WHEEL_CIRCUMFERENCE_CM = WHEEL_DIAMETER_CM * PI;
 //const float CM_PER_STEP            = WHEEL_CIRCUMFERENCE_CM / STEPS_PER_REV;
 //const float CM_PER_DEGREE          = WHEEL_CIRCUMFERENCE_CM / 360.0;     // wheel movement per degree rotation of robot
-const float STEPS_PER_CM             = STEPS_PER_REV/(WHEEL_DIAMETER_CM*PI);
+const float STEPS_PER_CM;
 //const float STEPS_PER_ROTATION     = (TRACK_WIDTH_CM / WHEEL_DIAMETER_CM) * STEPS_PER_REV ;  // robot rotation
 //const float STEPS_PER_DEGREE       = STEPS_PER_ROTATION / 360.0;         // robot rotation
-const float STEPS_PER_DEGREE         = (TRACK_WIDTH_CM / WHEEL_DIAMETER_CM) * STEPS_PER_REV / 360.0;
-const float STEPS_PER_ARM_CM         = 650;
+const float STEPS_PER_DEGREE;
+const float STEPS_PER_ARM_CM;
 
 
 #define DISTANCE_TIME_COSNTANT 222.222222

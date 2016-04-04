@@ -1,6 +1,14 @@
 #include "Sparki.h"
 #include <limits.h>
 
+
+const float STEPS_PER_CM             = STEPS_PER_REV/(WHEEL_DIAMETER_CM*PI);
+//const float STEPS_PER_ROTATION     = (TRACK_WIDTH_CM / WHEEL_DIAMETER_CM) * STEPS_PER_REV ;  // robot rotation
+//const float STEPS_PER_DEGREE       = STEPS_PER_ROTATION / 360.0;         // robot rotation
+const float STEPS_PER_DEGREE         = (TRACK_WIDTH_CM / WHEEL_DIAMETER_CM) * STEPS_PER_REV / 360.0;
+const float STEPS_PER_ARM_CM         = 650;
+
+
 static int8_t step_dir[3];                 // -1 = ccw, 1 = cw
 
 static uint8_t motor_speed[3];              // stores last set motor speed (0-100%)

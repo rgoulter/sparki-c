@@ -8,8 +8,8 @@
  * published by the Free Software Foundation.
  */
 
-#ifndef _SPI_H_INCLUDED
-#define _SPI_H_INCLUDED
+#ifndef _CSPI_H_INCLUDED
+#define _CSPI_H_INCLUDED
 
 #include <stdio.h>
 #include <avr/pgmspace.h>
@@ -45,20 +45,5 @@ void SPI_end();
 void SPI_setBitOrder(uint8_t);
 void SPI_setDataMode(uint8_t);
 void SPI_setClockDivider(uint8_t);
-
-uint8_t SPI_transfer(uint8_t _data) {
-  SPDR = _data;
-  while (!(SPSR & _BV(SPIF)))
-    ;
-  return SPDR;
-}
-
-void SPI_attachInterrupt() {
-  SPCR |= _BV(SPIE);
-}
-
-void SPI_detachInterrupt() {
-  SPCR &= ~_BV(SPIE);
-}
 
 #endif

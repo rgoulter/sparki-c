@@ -65,3 +65,18 @@ void SPI_setClockDivider(uint8_t rate)
   SPSR = (SPSR & ~SPI_2XCLOCK_MASK) | ((rate >> 2) & SPI_2XCLOCK_MASK);
 }
 
+uint8_t SPI_transfer(uint8_t _data) {
+  SPDR = _data;
+  while (!(SPSR & _BV(SPIF)))
+    ;
+  return SPDR;
+}
+
+void SPI_attachInterrupt() {
+  SPCR |= _BV(SPIE);
+}
+
+void SPI_detachInterrupt() {
+  SPCR &= ~_BV(SPIE);
+}
+
