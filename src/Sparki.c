@@ -46,13 +46,6 @@ static volatile int speedCount[3];      // what speedCount is set at when speed 
 
 static volatile uint8_t shift_outputs[3];      // tells if motor is running
 
-// variables for communication between the IR read function and its interrupt
-#define MAX_IR_PULSE 20000
-volatile long timeSinceLastPulse = 0;
-volatile long lastPulseTime = 0;
-volatile uint16_t pulsesIR[50][2]; // LOW,HIGH
-volatile uint8_t currentPulse = 0;
-volatile uint8_t haltIRRead = 0;
 
 
 //R These should be in the header at some point.

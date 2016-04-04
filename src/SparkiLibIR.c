@@ -1,3 +1,15 @@
+#include "Sparki.h"
+
+// variables for communication between the IR read function and its interrupt
+#define MAX_IR_PULSE 20000
+volatile long timeSinceLastPulse = 0;
+volatile long lastPulseTime = 0;
+volatile uint16_t pulsesIR[50][2]; // LOW,HIGH
+volatile uint8_t currentPulse = 0;
+volatile uint8_t haltIRRead = 0;
+
+
+
 // Uses timer3 to send on/off IR pulses according to the NEC IR transmission standard
 // http://wiki.altium.com/display/ADOH/NEC+Infrared+Transmission+Protocol
 // protocol. Turns off timer3 functions and timer4 motor/LED interference to avoid conflict
@@ -125,7 +137,7 @@ int sparki_readIR(){
         }
         currentPulse = 0; // 'reset' the current IR pulse reading
         haltIRRead = 0;
-        return int(code); // return the decoded value
+        return (int)(code); // return the decoded value
     }
     else{
         return -1; // no signal found, return -1
