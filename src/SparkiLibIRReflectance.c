@@ -85,9 +85,9 @@ int sparki_edgeLeft(){
 
 int sparki_readSensorIR(int pin){
     int read = 0;
-    onIR();
+    sparki_onIR();
     read = analogRead(pin);
-    offIR();
+    sparki_offIR();
     return read;
 }
 
@@ -117,8 +117,8 @@ int sparki_diffIR(int pin0, int pin1, int pin2){
     delay(1);
     int readOff = analogRead(MUX_ANALOG);
     delay(10);
-    onIR();
+    sparki_onIR();
     int readOn = analogRead(MUX_ANALOG);
-    offIR();
+    sparki_offIR();
     return readOff-readOn;
 }
