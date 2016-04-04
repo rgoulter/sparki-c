@@ -5,7 +5,7 @@
 //#define NO_ACCEL  // disables the Accelerometer, frees up 598 Bytes Flash Memory
 //#define NO_MAG    // disables the Magnetometer, frees up 2500 Bytes Flash Memory
 
-#include "Arduino.h"
+// #include "Arduino.h"
 #include "Print.h"
 
 #define SHIFTREG_LATCH      TXLED0   // PD5
