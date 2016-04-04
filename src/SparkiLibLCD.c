@@ -433,7 +433,7 @@ uint8_t st7565_buffer[1024] = {
 static uint8_t xUpdateMin, xUpdateMax, yUpdateMin, yUpdateMax;
 #endif
 
-void SparkiClass::updateBoundingBox(uint8_t xmin, uint8_t ymin, uint8_t xmax, uint8_t ymax) {
+void sparki_updateBoundingBox(uint8_t xmin, uint8_t ymin, uint8_t xmax, uint8_t ymax) {
 #ifdef enablePartialUpdate
     if (xmin < xUpdateMin) xUpdateMin = xmin;
     if (xmax > xUpdateMax) xUpdateMax = xmax;
@@ -443,7 +443,7 @@ void SparkiClass::updateBoundingBox(uint8_t xmin, uint8_t ymin, uint8_t xmax, ui
 }
 
 
-void SparkiClass::setPixelColor(uint8_t color){
+void sparki_setPixelColor(uint8_t color){
     // sanitize the input
     if(color == WHITE){
         pixel_color = WHITE;
@@ -453,7 +453,7 @@ void SparkiClass::setPixelColor(uint8_t color){
     }
 }
 
-void SparkiClass::drawBitmap(uint8_t x, uint8_t y,
+void sparki_drawBitmap(uint8_t x, uint8_t y,
         const uint8_t *bitmap, uint8_t w, uint8_t h) {
     ensure_lcd_init();
     for (uint8_t j=0; j<h; j++) {
@@ -467,7 +467,7 @@ void SparkiClass::drawBitmap(uint8_t x, uint8_t y,
     updateBoundingBox(x, y, x+w, y+h);
 }
 
-void SparkiClass::moveUpLine() {
+void sparki_moveUpLine() {
     ensure_lcd_init();
     memmove(st7565_buffer, st7565_buffer+128, 1024-128);
     memset(st7565_buffer+1024-128,0,128);
@@ -477,7 +477,7 @@ void SparkiClass::moveUpLine() {
 uint8_t print_char_x = 0;
 uint8_t print_line_y = 0;
 
-void SparkiClass::textWrite(const char* buffer, uint16_t len) {
+void sparki_textWrite(const char* buffer, uint16_t len) {
     ensure_lcd_init();
     for (uint16_t i=0;i<len;i++){
         if(buffer[i] == '\n'){
@@ -504,7 +504,7 @@ void SparkiClass::textWrite(const char* buffer, uint16_t len) {
 
 
 
-void SparkiClass::drawString(uint8_t x, uint8_t line, char *c) {
+void sparki_drawString(uint8_t x, uint8_t line, char *c) {
     ensure_lcd_init();
     while (c[0] != 0) {
         drawChar(x, line, c[0]);
@@ -521,7 +521,7 @@ void SparkiClass::drawString(uint8_t x, uint8_t line, char *c) {
     }
 }
 
-void SparkiClass::drawString_P(uint8_t x, uint8_t line, const char *str) {
+void sparki_drawString_P(uint8_t x, uint8_t line, const char *str) {
     ensure_lcd_init();
     while (1) {
         char c = pgm_read_byte(str++);
@@ -538,7 +538,7 @@ void SparkiClass::drawString_P(uint8_t x, uint8_t line, const char *str) {
     }
 }
 
-void  SparkiClass::drawChar(uint8_t x, uint8_t line, char c) {
+void  sparki_drawChar(uint8_t x, uint8_t line, char c) {
     ensure_lcd_init();
     for (uint8_t i =0; i<5; i++ ) {
         st7565_buffer[x + (line*128) ] = pgm_read_byte(font+(c*5)+i);
@@ -549,7 +549,7 @@ void  SparkiClass::drawChar(uint8_t x, uint8_t line, char c) {
 }
 
 // bresenham's algorithm - thx wikpedia
-void SparkiClass::drawLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1) {
+void sparki_drawLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1) {
     ensure_lcd_init();
     uint8_t steep = abs(y1 - y0) > abs(x1 - x0);
     if (steep) {
@@ -592,7 +592,7 @@ void SparkiClass::drawLine(uint8_t x0, uint8_t y0, uint8_t x1, uint8_t y1) {
 }
 
 // filled rectangle
-void SparkiClass::drawRectFilled(uint8_t x, uint8_t y, uint8_t w, uint8_t h) {
+void sparki_drawRectFilled(uint8_t x, uint8_t y, uint8_t w, uint8_t h) {
     ensure_lcd_init();
 
     // stupidest version - just pixels - but fast with internal buffer!
@@ -606,7 +606,7 @@ void SparkiClass::drawRectFilled(uint8_t x, uint8_t y, uint8_t w, uint8_t h) {
 }
 
 // draw a rectangle
-void SparkiClass::drawRect(uint8_t x, uint8_t y, uint8_t w, uint8_t h) {
+void sparki_drawRect(uint8_t x, uint8_t y, uint8_t w, uint8_t h) {
     ensure_lcd_init();
     // stupidest version - just pixels - but fast with internal buffer!
     for (uint8_t i=x; i<x+w; i++) {
@@ -622,7 +622,7 @@ void SparkiClass::drawRect(uint8_t x, uint8_t y, uint8_t w, uint8_t h) {
 }
 
 // draw a circle outline
-void SparkiClass::drawCircle(uint8_t x0, uint8_t y0, uint8_t r) {
+void sparki_drawCircle(uint8_t x0, uint8_t y0, uint8_t r) {
     ensure_lcd_init();
     updateBoundingBox(x0-r, y0-r, x0+r, y0+r);
 
@@ -660,7 +660,7 @@ void SparkiClass::drawCircle(uint8_t x0, uint8_t y0, uint8_t r) {
     }
 }
 
-void SparkiClass::drawCircleFilled(uint8_t x0, uint8_t y0, uint8_t r) {
+void sparki_drawCircleFilled(uint8_t x0, uint8_t y0, uint8_t r) {
     ensure_lcd_init();
     updateBoundingBox(x0-r, y0-r, x0+r, y0+r);
 
@@ -695,7 +695,7 @@ void SparkiClass::drawCircleFilled(uint8_t x0, uint8_t y0, uint8_t r) {
     }
 }
 
-void SparkiClass::my_setpixel(uint8_t x, uint8_t y, uint8_t color) {
+void sparki_my_setpixel(uint8_t x, uint8_t y, uint8_t color) { // "private"
     ensure_lcd_init();
     if ((x >= LCDWIDTH) || (y >= LCDHEIGHT))
         return;
@@ -708,7 +708,7 @@ void SparkiClass::my_setpixel(uint8_t x, uint8_t y, uint8_t color) {
 }
 
 // the most basic function, set a single pixel
-void SparkiClass::drawPixel(uint8_t x, uint8_t y) {
+void sparki_drawPixel(uint8_t x, uint8_t y) {
     ensure_lcd_init();
     if ((x >= LCDWIDTH) || (y >= LCDHEIGHT))
         return;
@@ -724,7 +724,7 @@ void SparkiClass::drawPixel(uint8_t x, uint8_t y) {
 
 
 // the most basic function, get a single pixel
-uint8_t SparkiClass::readPixel(uint8_t x, uint8_t y) {
+uint8_t sparki_readPixel(uint8_t x, uint8_t y) {
     ensure_lcd_init();
     if ((x >= LCDWIDTH) || (y >= LCDHEIGHT))
         return 0;
@@ -733,7 +733,7 @@ uint8_t SparkiClass::readPixel(uint8_t x, uint8_t y) {
 }
 
 uint8_t lcd_init_flag = 0;
-void SparkiClass::ensure_lcd_init() {
+void sparki_ensure_lcd_init() {
 #ifdef NOLCD
     if (lcd_init_flag == 0){
         lcd_init_flag = 1;
@@ -754,7 +754,7 @@ void SparkiClass::ensure_lcd_init() {
 #endif
 }
 
-void SparkiClass::beginDisplay() {
+void sparki_beginDisplay() {
     startSPI();
     st7565_init();
     st7565_command(CMD_DISPLAY_ON);
@@ -762,7 +762,7 @@ void SparkiClass::beginDisplay() {
     st7565_set_brightness(0x00);
 }
 
-void SparkiClass::progmem_lcd_logo(){
+void sparki_progmem_lcd_logo(){
     startSPI();
     st7565_init();
     st7565_command(CMD_DISPLAY_ON);
@@ -829,7 +829,7 @@ void SparkiClass::progmem_lcd_logo(){
 }
 
 
-void SparkiClass::startSPI(){
+void sparki_startSPI(){ // "private"
     // Setup all the SPI pins
     pinMode(SCK, OUTPUT);
     pinMode(MOSI, OUTPUT);
@@ -850,7 +850,7 @@ void SparkiClass::startSPI(){
     SPSR = (SPSR & ~SPI_2XCLOCK_MASK) | ((SPI_CLOCK_DIV2 >> 2) & SPI_2XCLOCK_MASK);
 }
 
-void SparkiClass::st7565_init(void) {
+void sparki_st7565_init(void) {
     // set pin directions
     pinMode(LCD_A0, OUTPUT);
     pinMode(LCD_RST, OUTPUT);
@@ -911,7 +911,7 @@ void SparkiClass::st7565_init(void) {
     updateBoundingBox(0, 0, LCDWIDTH-1, LCDHEIGHT-1);
 }
 
-inline void SparkiClass::spiwrite(uint8_t c) {
+inline void sparki_spiwrite(uint8_t c) { // "private"
     noInterrupts();
     //  make sure un chip-select the shift registers
     PORTD |= 0x20;
@@ -927,24 +927,24 @@ inline void SparkiClass::spiwrite(uint8_t c) {
     PORTB |= 0x01;
     interrupts();
 }
-void SparkiClass::st7565_command(uint8_t c) {
+void sparki_st7565_command(uint8_t c) {
     digitalWrite(LCD_A0, LOW);
 
     spiwrite(c);
 }
 
-void SparkiClass::st7565_data(uint8_t c) {
+void sparki_st7565_data(uint8_t c) {
     digitalWrite(LCD_A0, HIGH);
 
     spiwrite(c);
 }
-void SparkiClass::st7565_set_brightness(uint8_t val) {
+void sparki_st7565_set_brightness(uint8_t val) {
     st7565_command(CMD_SET_VOLUME_FIRST);
     st7565_command(CMD_SET_VOLUME_SECOND | (val & 0x3f));
 }
 
 
-void SparkiClass::updateLCD(void) {
+void sparki_updateLCD(void) {
     ensure_lcd_init();
     uint8_t col, maxcol, p;
 
@@ -1003,7 +1003,7 @@ void SparkiClass::updateLCD(void) {
 }
 
 // clear everything
-void SparkiClass::clearLCD(void) {
+void sparki_clearLCD(void) {
     ensure_lcd_init();
     print_char_x = 0;
     print_line_y = 0;
@@ -1013,7 +1013,7 @@ void SparkiClass::clearLCD(void) {
 
 
 // this doesnt touch the buffer, just clears the display RAM - might be handy
-void SparkiClass::clear_display(void) {
+void sparki_clear_display(void) {
     uint8_t p, c;
 
     for(p = 0; p < 8; p++) {

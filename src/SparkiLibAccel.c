@@ -10,7 +10,7 @@ volatile float zAxisAccel;
 #endif
 
 #ifndef NO_ACCEL
-void SparkiClass::readAccelData()
+void sparki_readAccelData()
 {
     int accelCount[3];
     uint8_t rawData[6];  // x/y/z accel register data stored here
@@ -35,7 +35,7 @@ void SparkiClass::readAccelData()
     zAxisAccel = (float) accelCount[2]/((1<<12)/(2*ACCEL_SCALE));
 }
 
-int SparkiClass::initAccelerometer()
+int sparki_initAccelerometer()
 {
     uint8_t c = readi2cRegister(0x0D, MMA8452_ADDRESS);  // Read WHO_AM_I register
     if (c == 0x2A){ // WHO_AM_I should always be 0x2
@@ -61,21 +61,21 @@ int SparkiClass::initAccelerometer()
     }
 }
 
-float SparkiClass::accelX(){
+float sparki_accelX(){
     readAccelData();
     return -xAxisAccel*9.8;
 }
-float SparkiClass::accelY(){
+float sparki_accelY(){
     readAccelData();
     return -yAxisAccel*9.8;
 }
-float SparkiClass::accelZ(){
+float sparki_accelZ(){
     readAccelData();
     return -zAxisAccel*9.8;
 }
 
 // Read i registers sequentially, starting at address into the dest byte array
-void SparkiClass::readi2cRegisters(byte address, int i, byte * dest, uint8_t i2cAddress)
+void sparki_readi2cRegisters(byte address, int i, byte * dest, uint8_t i2cAddress)
 {
     i2cSendStart();
     i2cWaitForComplete();
@@ -103,7 +103,7 @@ void SparkiClass::readi2cRegisters(byte address, int i, byte * dest, uint8_t i2c
 }
 
 // Read a single byte from address and return it as a byte
-byte SparkiClass::readi2cRegister(uint8_t address, uint8_t i2cAddress)
+byte sparki_readi2cRegister(uint8_t address, uint8_t i2cAddress)
 {
     byte data;
 
@@ -134,7 +134,7 @@ byte SparkiClass::readi2cRegister(uint8_t address, uint8_t i2cAddress)
 }
 
 // Writes a single byte (data) into address
-void SparkiClass::readi2cRegister(unsigned char address, unsigned char data, uint8_t i2cAddress)
+void sparki_readi2cRegister(unsigned char address, unsigned char data, uint8_t i2cAddress)
 {
     i2cSendStart();
     i2cWaitForComplete();

@@ -1,15 +1,15 @@
 #ifndef NO_MAG
-float SparkiClass::readMag(){
+float sparki_readMag(){
     WireRead(DataRegisterBegin, RawMagDataLength);
-    xAxisMag = ((mag_buffer[0] << 8) | mag_buffer[1]) * M_SCALE;
-    zAxisMag = ((mag_buffer[2] << 8) | mag_buffer[3]) * M_SCALE;
-    yAxisMag = ((mag_buffer[4] << 8) | mag_buffer[5]) * M_SCALE;
+    sparki_xAxisMag = ((mag_buffer[0] << 8) | mag_buffer[1]) * M_SCALE;
+    sparki_zAxisMag = ((mag_buffer[2] << 8) | mag_buffer[3]) * M_SCALE;
+    sparki_yAxisMag = ((mag_buffer[4] << 8) | mag_buffer[5]) * M_SCALE;
 }
 
-float SparkiClass::compass(){
+float sparki_compass(){
     readMag();
 
-    float heading = atan2(yAxisMag,xAxisMag);
+    float heading = atan2(sparki_yAxisMag, sparki_xAxisMag);
 
     if(heading < 0)
         heading += 2*PI;
@@ -20,29 +20,29 @@ float SparkiClass::compass(){
     return headingDegrees;
 }
 
-float SparkiClass::magX(){
+float sparki_magX(){
     readMag();
-    return xAxisMag;
+    return sparki_xAxisMag;
 }
 
-float SparkiClass::magY(){
+float sparki_magY(){
     readMag();
-    return yAxisMag;
+    return sparki_yAxisMag;
 }
 
-float SparkiClass::magZ(){
+float sparki_magZ(){
     readMag();
-    return zAxisMag;
+    return sparki_zAxisMag;
 }
 
-void SparkiClass::WireWrite(int address, int data){
+void sparki_WireWrite(int address, int data){
     Wire.beginTransmission(HMC5883L_Address);
     Wire.write(address);
     Wire.write(data);
     Wire.endTransmission();
 }
 
-uint8_t* SparkiClass::WireRead(int address, int length){
+uint8_t* sparki_WireRead(int address, int length){
     Wire.beginTransmission(HMC5883L_Address);
     Wire.write(DataRegisterBegin);
     Wire.endTransmission();

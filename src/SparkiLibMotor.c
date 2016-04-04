@@ -3,7 +3,7 @@
  * speed is percent 0-100
  */
 
-void SparkiClass::moveRight(float deg)
+void sparki_moveRight(float deg)
 {
     unsigned long steps = STEPS_PER_DEGREE*deg;
     if(deg == 0){
@@ -22,19 +22,19 @@ void SparkiClass::moveRight(float deg)
     }
 }
 
-void SparkiClass::stepRight(unsigned long steps)
+void sparki_stepRight(unsigned long steps)
 {
     motorRotate(MOTOR_LEFT, DIR_CCW, move_speed, steps);
     motorRotate(MOTOR_RIGHT, DIR_CCW, move_speed, steps);
 }
 
-void SparkiClass::moveRight()
+void sparki_moveRight()
 {
     motorRotate(MOTOR_LEFT, DIR_CCW, move_speed, ULONG_MAX);
     motorRotate(MOTOR_RIGHT, DIR_CCW, move_speed, ULONG_MAX);
 }
 
-void SparkiClass::moveLeft(float deg)
+void sparki_moveLeft(float deg)
 {
     unsigned long steps = STEPS_PER_DEGREE*deg;
     if(deg == 0){
@@ -53,19 +53,19 @@ void SparkiClass::moveLeft(float deg)
     }
 }
 
-void SparkiClass::stepLeft(unsigned long steps)
+void sparki_stepLeft(unsigned long steps)
 {
     motorRotate(MOTOR_LEFT,  DIR_CW, move_speed, steps);
     motorRotate(MOTOR_RIGHT, DIR_CW, move_speed, steps);
 }
 
-void SparkiClass::moveLeft()
+void sparki_moveLeft()
 {
     motorRotate(MOTOR_LEFT,  DIR_CW, move_speed, ULONG_MAX);
     motorRotate(MOTOR_RIGHT, DIR_CW, move_speed, ULONG_MAX);
 }
 
-void SparkiClass::moveForward(float cm)
+void sparki_moveForward(float cm)
 {
     unsigned long steps = STEPS_PER_CM*cm;
     if(cm == 0){
@@ -84,19 +84,19 @@ void SparkiClass::moveForward(float cm)
     }
 }
 
-void SparkiClass::stepForward(unsigned long steps)
+void sparki_stepForward(unsigned long steps)
 {
     motorRotate(MOTOR_LEFT, DIR_CCW, move_speed, steps);
     motorRotate(MOTOR_RIGHT, DIR_CW, move_speed, steps);
 }
 
-void SparkiClass::moveForward()
+void sparki_moveForward()
 {
     motorRotate(MOTOR_LEFT, DIR_CCW, move_speed, ULONG_MAX);
     motorRotate(MOTOR_RIGHT, DIR_CW, move_speed, ULONG_MAX);
 }
 
-void SparkiClass::moveBackward(float cm)
+void sparki_moveBackward(float cm)
 {
     unsigned long steps = STEPS_PER_CM*cm;
     if(cm == 0){
@@ -115,58 +115,58 @@ void SparkiClass::moveBackward(float cm)
     }
 }
 
-void SparkiClass::stepBackward(unsigned long steps)
+void sparki_stepBackward(unsigned long steps)
 {
     motorRotate(MOTOR_LEFT,   DIR_CW, move_speed, steps);
     motorRotate(MOTOR_RIGHT, DIR_CCW, move_speed, steps);
 }
 
-void SparkiClass::moveBackward()
+void sparki_moveBackward()
 {
     motorRotate(MOTOR_LEFT,   DIR_CW, move_speed, ULONG_MAX);
     motorRotate(MOTOR_RIGHT, DIR_CCW, move_speed, ULONG_MAX);
 }
 
-void SparkiClass::moveStop()
+void sparki_moveStop()
 {
     motorStop(MOTOR_LEFT);
     motorStop(MOTOR_RIGHT);
 }
 
-void SparkiClass::gripperOpen()
+void sparki_gripperOpen()
 {
     motorRotate(MOTOR_GRIPPER, DIR_CCW, move_speed, ULONG_MAX);
 }
-void SparkiClass::gripperOpen(float cm)
+void sparki_gripperOpen(float cm)
 {
     motorRotate(MOTOR_GRIPPER, DIR_CCW, move_speed, (unsigned long)(cm*STEPS_PER_ARM_CM));
 }
 
-void SparkiClass::gripperClose()
+void sparki_gripperClose()
 {
     motorRotate(MOTOR_GRIPPER, DIR_CW, move_speed, ULONG_MAX);
 }
-void SparkiClass::gripperClose(float cm)
+void sparki_gripperClose(float cm)
 {
     motorRotate(MOTOR_GRIPPER, DIR_CW, move_speed, (unsigned long)(cm*STEPS_PER_ARM_CM));
 }
 
-void SparkiClass::gripperStop()
+void sparki_gripperStop()
 {
     motorStop(MOTOR_GRIPPER);
 }
 
-void SparkiClass::speed(uint8_t speed)
+void sparki_speed(uint8_t speed)
 {
     move_speed = speed;
 }
 
-void SparkiClass::motorRotate(int motor, int direction, int speed)
+void sparki_motorRotate(int motor, int direction, int speed)
 {
     motorRotate(motor, direction, speed, ULONG_MAX);
 }
 
-void SparkiClass::motorRotate(int motor, int direction, int speed, long steps)
+void sparki_motorRotate(int motor, int direction, int speed, long steps)
 {
     //Serial.print("Motor ");Serial.print(motor); Serial.print(" rotate, dir= ");
     //Serial.print(direction); Serial.print(", steps= "); Serial.println(steps);
@@ -209,13 +209,13 @@ void SparkiClass::motorRotate(int motor, int direction, int speed, long steps)
     delay(1);
 }
 
-void SparkiClass::motorStop(int motor)
+void sparki_motorStop(int motor)
 {
     motorRotate(motor, 1, 0, 0);
 }
 
 // returns true if one or both motors a still stepping
-bool SparkiClass::areMotorsRunning()
+bool sparki_areMotorsRunning()
 {
     bool result;
     uint8_t oldSREG = SREG;

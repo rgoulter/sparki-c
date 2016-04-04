@@ -4,18 +4,18 @@ void begin_beep() {
     digitalWrite(BUZZER, LOW);
 }
 
-void SparkiClass::beep(){
+void sparki_beep(){
     tone(BUZZER, BUZZER_FREQ, 200);
 }
 
-void SparkiClass::beep(int freq){
+void sparki_beep(int freq){
     tone(BUZZER, freq, 200);
 }
 
-void SparkiClass::beep(int freq, int time){
+void sparki_beep(int freq, int time){
     tone(BUZZER, freq, time);
 }
 
-void SparkiClass::noBeep(){
+void sparki_noBeep(){
     noTone(BUZZER);
 }

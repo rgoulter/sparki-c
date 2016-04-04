@@ -13,7 +13,7 @@ void begin_irreflectance() {
     irSwitch = 0;
 }
 
-void SparkiClass::setMux(uint8_t A, uint8_t B, uint8_t C){
+void sparki_setMux(uint8_t A, uint8_t B, uint8_t C){
     digitalWrite(MUX_A, A);
     digitalWrite(MUX_B, B);
     digitalWrite(MUX_C, C);
@@ -24,17 +24,17 @@ void SparkiClass::setMux(uint8_t A, uint8_t B, uint8_t C){
  * Light Sensors
  */
 
-int SparkiClass::lightRight(){
+int sparki_lightRight(){
     setMux(LIGHT_RIGHT);
     return analogRead(MUX_ANALOG);
 }
 
-int SparkiClass::lightCenter(){
+int sparki_lightCenter(){
     setMux(LIGHT_CENTER);
     return analogRead(MUX_ANALOG);
 }
 
-int SparkiClass::lightLeft(){
+int sparki_lightLeft(){
     setMux(LIGHT_LEFT);
     return analogRead(MUX_ANALOG);
 }
@@ -44,32 +44,32 @@ int SparkiClass::lightLeft(){
  */
 
 
-int SparkiClass::edgeRight(){
+int sparki_edgeRight(){
     setMux(IR_EDGE_RIGHT);
     return readSensorIR(MUX_ANALOG);
 }
 
-int SparkiClass::lineRight(){
+int sparki_lineRight(){
     setMux(IR_LINE_RIGHT);
     return readSensorIR(MUX_ANALOG);
 }
 
-int SparkiClass::lineCenter(){
+int sparki_lineCenter(){
     setMux(IR_LINE_CENTER);
     return readSensorIR(MUX_ANALOG);
 }
 
-int SparkiClass::lineLeft(){
+int sparki_lineLeft(){
     setMux(IR_LINE_LEFT);
     return readSensorIR(MUX_ANALOG);
 }
 
-int SparkiClass::edgeLeft(){
+int sparki_edgeLeft(){
     setMux(IR_EDGE_LEFT);
     return readSensorIR(MUX_ANALOG);
 }
 
-int SparkiClass::readSensorIR(int pin){
+int sparki_readSensorIR(int pin){
     int read = 0;
     onIR();
     read = analogRead(pin);
@@ -77,19 +77,19 @@ int SparkiClass::readSensorIR(int pin){
     return read;
 }
 
-void SparkiClass::onIR()  // turns off the IR Detection LEDs
+void sparki_onIR()  // turns off the IR Detection LEDs
 {
     irSwitch = 1;
     delay(1); // give time for a scheduler cycle to run
 }
 
-void SparkiClass::offIR() // turns off the IR Detection LEDs
+void sparki_offIR() // turns off the IR Detection LEDs
 {
     irSwitch = 0;
     delay(1); // give time for a scheduler cycle to run
 }
 
-int SparkiClass::readBlindSensorIR(int pin0, int pin1, int pin2){
+int sparki_readBlindSensorIR(int pin0, int pin1, int pin2){
     int read = 0;
     setMux(pin0, pin1, pin2);
     delay(1);
@@ -98,7 +98,7 @@ int SparkiClass::readBlindSensorIR(int pin0, int pin1, int pin2){
     return read;
 }
 
-int SparkiClass::diffIR(int pin0, int pin1, int pin2){
+int sparki_diffIR(int pin0, int pin1, int pin2){
     setMux(pin0, pin1, pin2);
     delay(1);
     int readOff = analogRead(MUX_ANALOG);

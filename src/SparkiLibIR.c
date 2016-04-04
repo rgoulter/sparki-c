@@ -1,7 +1,7 @@
 // Uses timer3 to send on/off IR pulses according to the NEC IR transmission standard
 // http://wiki.altium.com/display/ADOH/NEC+Infrared+Transmission+Protocol
 // protocol. Turns off timer3 functions and timer4 motor/LED interference to avoid conflict
-void SparkiClass::sendIR(uint8_t code){
+void sparki_sendIR(uint8_t code){
     char oldSREG = SREG;
     noInterrupts();  // Disable interrupts for 16 bit register access
 
@@ -89,7 +89,7 @@ void SparkiClass::sendIR(uint8_t code){
     EIMSK  = EIMSK_store;
 }
 
-void SparkiClass::irPulse(uint16_t on, uint16_t off){
+void sparki_irPulse(uint16_t on, uint16_t off){
     TIMSK3 |= (1 << OCIE3B);  // enable  38khz signal
     delayMicroseconds(on);
     TIMSK3 &= ~(1 << OCIE3B);  // disable 38khz signal
@@ -108,7 +108,7 @@ void SparkiClass::irPulse(uint16_t on, uint16_t off){
 http://wiki.altium.com/display/ADOH/NEC+Infrared+Transmission+Protocol
 */
 
-int SparkiClass::readIR(){
+int sparki_readIR(){
     uint8_t code = 0;
     if(currentPulse != 0){ // check there's a code waiting
         while( micros()-lastPulseTime <= MAX_IR_PULSE){

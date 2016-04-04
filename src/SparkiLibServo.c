@@ -1,4 +1,4 @@
-void SparkiClass::startServoTimer(){
+void sparki_startServoTimer(){
     char oldSREG = SREG;
     noInterrupts();                                       // Disable interrupts for 16 bit register access
     TCCR1A = 0;                                           // clear control register A
@@ -12,9 +12,9 @@ void SparkiClass::startServoTimer(){
     SREG = oldSREG;
 }
 
-void SparkiClass::servo(int deg)
+void sparki_servo(int deg)
 {
-    startServoTimer();
+    sparki_startServoTimer();
     int duty = int((((float(-deg+servo_deg_offset)*2000/180)+1500)/20000)*1024); // compute the duty cycle for the servo
     //0 = 26
     //180 = 128

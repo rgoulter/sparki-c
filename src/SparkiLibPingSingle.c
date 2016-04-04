@@ -1,4 +1,4 @@
-int SparkiClass::ping_single(){
+int sparki_ping_single(){
     long duration;
     float cm;
     digitalWrite(ULTRASONIC_TRIG, LOW);
@@ -48,7 +48,7 @@ int SparkiClass::ping_single(){
     return int(cm);
 }
 
-int SparkiClass::ping(){
+int sparki_ping(){
     int attempts = 5;
     float distances [attempts];
     for(int i=0; i<attempts; i++){

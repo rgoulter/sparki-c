@@ -60,17 +60,12 @@ volatile uint8_t haltIRRead = 0;
 // values for the servo
 volatile int8_t servo_deg_offset = 0;
 
-SparkiClass sparki;
+// SparkiClass sparki;
 
-SparkiClass::SparkiClass()
-{
-    begin();
-}
+void sparki_begin( ) {
 
-void SparkiClass::begin( ) {
-
-    // Serial.begin(9600);  // XXX Serial is C++ Arduino
-    // Serial1.begin(9600); // XXX Let's not use, temporarily.
+    // Serial.begin(9600);  //R XXX Serial is C++ Arduino
+    // Serial1.begin(9600); //R XXX Let's not use, temporarily.
 
     // set up the Status LED
     pinMode(STATUS_LED, OUTPUT);
@@ -185,8 +180,8 @@ void SparkiClass::begin( ) {
     EIMSK |= (1 << INT6);
 
     interrupts();
-    i2cInit(); // start up i2c for the accelerometer and magnetometer
 #ifndef NO_ACCEL
+    i2cInit(); // start up i2c for the accelerometer (not mag)
     initAccelerometer();
 #endif
 
@@ -198,7 +193,7 @@ void SparkiClass::begin( ) {
 
 }
 
-float SparkiClass::systemVoltage(){
+float sparki_systemVoltage(){
     float voltage=0;
 
     pinMode(BATTERY_MONITOR, INPUT);
@@ -225,7 +220,7 @@ static volatile uint8_t shift_old_1 = 0x00;
 
 ISR(TIMER4_COMPA_vect)          // interrupt service routine that wraps a user defined function supplied by attachInterrupt
 {
-    //void SparkiClass::scheduler(){
+    //void sparki_scheduler(){
     // Clear the timer interrupt counter
     TCNT4=0;
 
@@ -237,19 +232,7 @@ ISR(TIMER4_COMPA_vect)          // interrupt service routine that wraps a user d
     shift_outputs[1] = 0x00;
 
     // Update the RGB leds
-    if(RGB_timer < RGB_vals[0]){ // update Red led
-        shift_outputs[RGB_SHIFT] |= RGB_R;
-    }
-    if(RGB_timer < RGB_vals[1]){ // update Green led
-        shift_outputs[RGB_SHIFT] |= RGB_G;
-    }
-    if(RGB_timer < RGB_vals[2]){ // update Blue led
-        shift_outputs[RGB_SHIFT] |= RGB_B;
-    }
-    RGB_timer++;
-    if(RGB_timer == 50){
-        RGB_timer = 0;
-    }
+    isr_RGB();
 
     // IR Detection Switch
     if(irSwitch == 0){
