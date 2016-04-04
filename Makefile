@@ -61,7 +61,7 @@ $(BUILD_DIR)/sparki.a($(BUILD_DIR)/%.c.o): $(BUILD_DIR)/%.c.o
 $(BUILD_DIR)/sparki.a($(BUILD_DIR)/%.cpp.o): $(BUILD_DIR)/%.cpp.o
 	"$(AVR_BIN_DIR)/avr-ar" rcs "$(BUILD_DIR)/sparki.a" $<
 
-$(BUILD_DIR)/sparki.a: $(BUILD_DIR)/sparki.a($(BUILT_SPARKI_C_OBJS)) $(BUILD_DIR)/sparki.a($(BUILT_SPARKI_CPP_OBJS))
+$(BUILD_DIR)/sparki.a: $(BUILD_DIR)/sparki.a($(BUILT_SPARKI_C_OBJS))
 
 
 

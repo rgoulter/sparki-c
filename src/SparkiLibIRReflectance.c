@@ -1,3 +1,7 @@
+#include "Sparki.h"
+
+
+
 static volatile uint8_t irSwitch;
 // static volatile uint8_t irSwitch2;
 

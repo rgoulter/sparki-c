@@ -1,3 +1,7 @@
+#include "Sparki.h"
+
+
+
 void begin_beep() {
     // Setup Buzzer
     pinMode(BUZZER, OUTPUT);
