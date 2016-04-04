@@ -15,8 +15,8 @@ int sparki_ping_single(){
     uint8_t stateMask = (HIGH ? bit : 0);
 
     unsigned long startCount = 0;
-    unsigned long endCount = 0;
-    unsigned long width = 0; // keep initialization out of time critical area
+    // unsigned long endCount = 0;
+    // unsigned long width = 0; // keep initialization out of time critical area
 
     // convert the timeout from microseconds to a number of times through
     // the initial loop; it takes 16 clock cycles per iteration.
@@ -54,7 +54,7 @@ int sparki_ping(){
     int attempts = 5;
     float distances [attempts];
     for(int i=0; i<attempts; i++){
-        distances[i] = ping_single();
+        distances[i] = sparki_ping_single();
         delay(20);
     }
 

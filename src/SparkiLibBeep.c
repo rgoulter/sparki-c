@@ -9,17 +9,21 @@ void begin_beep() {
 }
 
 void sparki_beep(){
-    tone(BUZZER, BUZZER_FREQ, 200);
+    //R tone is C++, so can't use in pure C.
+    // tone(BUZZER, BUZZER_FREQ, 200);
 }
 
 void sparki_beep_freq(int freq){
-    tone(BUZZER, freq, 200);
+    //R tone is C++, so can't use in pure C.
+    // tone(BUZZER, freq, 200);
 }
 
 void sparki_beep_freq_time(int freq, int time){
-    tone(BUZZER, freq, time);
+    //R tone is C++, so can't use in pure C.
+    // tone(BUZZER, freq, time);
 }
 
 void sparki_noBeep(){
-    noTone(BUZZER);
+    //R tone is C++, so can't use in pure C.
+    // noTone(BUZZER);
 }

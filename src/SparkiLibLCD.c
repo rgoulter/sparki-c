@@ -1,6 +1,8 @@
 //R XXX Would love to be more specific here.
 #include "Sparki.h"
 #include <avr/eeprom.h>
+// for _delay_ms
+#include <util/delay.h>
 
 /***********************************************************************************
   Display Library

@@ -53,40 +53,40 @@ void sparki_sendIR(uint8_t code){
 
 
     // leadings 9ms pulse, 4.5ms gap
-    irPulse(9000,4500);
+    sparki_irPulse(9000,4500);
 
     // 8 bit address
     for(int i=0; i<8; i++){
-        irPulse(563,563); // NEC logical 0
+        sparki_irPulse(563,563); // NEC logical 0
     }
 
     // 8 bit address' logical inverse
     for(int i=0; i<8; i++){
-        irPulse(563,1687); // NEC logical 1
+        sparki_irPulse(563,1687); // NEC logical 1
     }
 
     // 8 bit command
     for(uint8_t i=0; i<8; i++){
         if( (code & (1<<i)) > 0 ){
-            irPulse(563,1687); // NEC logical 1
+            sparki_irPulse(563,1687); // NEC logical 1
         }
         else{
-            irPulse(563,563);  // NEC logical 0
+            sparki_irPulse(563,563);  // NEC logical 0
         }
     }
 
     // 8 bit command's logical inverse
     for(uint8_t i=0; i<8; i++){
         if( (code & (1<<i)) > 0 ){
-            irPulse(563,563);  // NEC logical 0
+            sparki_irPulse(563,563);  // NEC logical 0
         }
         else{
-            irPulse(563,1687); // NEC logical 1
+            sparki_irPulse(563,1687); // NEC logical 1
         }
     }
 
     // 562.5µs pulse to signal end of transmission
-    irPulse(563,10); // NEC logical 1
+    sparki_irPulse(563,10); // NEC logical 1
 
     //*****************************************
     // restore Timer3 and Timer4 roles

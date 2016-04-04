@@ -7,7 +7,6 @@
 
 #include <avr/eeprom.h>
 #include <avr/pgmspace.h>
-#include <util/delay.h>
 #include <stdlib.h>
 #include "CSPI.h"
 

@@ -1,4 +1,5 @@
 #include "Sparki.h"
+#include <avr/eeprom.h>
 
 // values for the servo
 volatile int8_t servo_deg_offset = 0;

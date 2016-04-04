@@ -39,17 +39,17 @@ void sparki_setMux(uint8_t A, uint8_t B, uint8_t C){
  */
 
 int sparki_lightRight(){
-    setMux(LIGHT_RIGHT);
+    sparki_setMux(LIGHT_RIGHT);
     return analogRead(MUX_ANALOG);
 }
 
 int sparki_lightCenter(){
-    setMux(LIGHT_CENTER);
+    sparki_setMux(LIGHT_CENTER);
     return analogRead(MUX_ANALOG);
 }
 
 int sparki_lightLeft(){
-    setMux(LIGHT_LEFT);
+    sparki_setMux(LIGHT_LEFT);
     return analogRead(MUX_ANALOG);
 }
 
@@ -59,28 +59,28 @@ int sparki_lightLeft(){
 
 
 int sparki_edgeRight(){
-    setMux(IR_EDGE_RIGHT);
-    return readSensorIR(MUX_ANALOG);
+    sparki_setMux(IR_EDGE_RIGHT);
+    return sparki_readSensorIR(MUX_ANALOG);
 }
 
 int sparki_lineRight(){
-    setMux(IR_LINE_RIGHT);
-    return readSensorIR(MUX_ANALOG);
+    sparki_setMux(IR_LINE_RIGHT);
+    return sparki_readSensorIR(MUX_ANALOG);
 }
 
 int sparki_lineCenter(){
-    setMux(IR_LINE_CENTER);
-    return readSensorIR(MUX_ANALOG);
+    sparki_setMux(IR_LINE_CENTER);
+    return sparki_readSensorIR(MUX_ANALOG);
 }
 
 int sparki_lineLeft(){
-    setMux(IR_LINE_LEFT);
-    return readSensorIR(MUX_ANALOG);
+    sparki_setMux(IR_LINE_LEFT);
+    return sparki_readSensorIR(MUX_ANALOG);
 }
 
 int sparki_edgeLeft(){
-    setMux(IR_EDGE_LEFT);
-    return readSensorIR(MUX_ANALOG);
+    sparki_setMux(IR_EDGE_LEFT);
+    return sparki_readSensorIR(MUX_ANALOG);
 }
 
 int sparki_readSensorIR(int pin){
@@ -105,7 +105,7 @@ void sparki_offIR() // turns off the IR Detection LEDs
 
 int sparki_readBlindSensorIR(int pin0, int pin1, int pin2){
     int read = 0;
-    setMux(pin0, pin1, pin2);
+    sparki_setMux(pin0, pin1, pin2);
     delay(1);
     read = analogRead(MUX_ANALOG);
     delay(1);
@@ -113,7 +113,7 @@ int sparki_readBlindSensorIR(int pin0, int pin1, int pin2){
 }
 
 int sparki_diffIR(int pin0, int pin1, int pin2){
-    setMux(pin0, pin1, pin2);
+    sparki_setMux(pin0, pin1, pin2);
     delay(1);
     int readOff = analogRead(MUX_ANALOG);
     delay(10);
