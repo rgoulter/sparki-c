@@ -1,3 +1,5 @@
+#include "Sparki.h"
+
 int sparki_ping_single(){
     long duration;
     float cm;
@@ -45,7 +47,7 @@ int sparki_ping_single(){
     duration = micros() - startCount;
     //--------- end pulsein
     cm = (float)duration / 29.0 / 2.0;
-    return int(cm);
+    return (int)(cm);
 }
 
 int sparki_ping(){
@@ -74,5 +76,5 @@ int sparki_ping(){
     }
 
     // return the middle entry
-    return int(distances[(int)ceil((float)attempts/2.0)]);
+    return (int)(distances[(int)ceil((float)attempts/2.0)]);
 }
