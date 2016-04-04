@@ -103,7 +103,7 @@ void sparki_readi2cRegisters(byte address, int i, byte * dest, uint8_t i2cAddres
 }
 
 // Read a single byte from address and return it as a byte
-byte sparki_readi2cRegister(uint8_t address, uint8_t i2cAddress)
+byte sparki_readi2cRegister_read(uint8_t address, uint8_t i2cAddress)
 {
     byte data;
 
@@ -134,7 +134,7 @@ byte sparki_readi2cRegister(uint8_t address, uint8_t i2cAddress)
 }
 
 // Writes a single byte (data) into address
-void sparki_readi2cRegister(unsigned char address, unsigned char data, uint8_t i2cAddress)
+void sparki_readi2cRegister_write(unsigned char address, unsigned char data, uint8_t i2cAddress)
 {
     i2cSendStart();
     i2cWaitForComplete();

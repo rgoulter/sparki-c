@@ -37,7 +37,7 @@ inline uint8_t SPI_transfer(uint8_t _data);
 // SPI Configuration methods
 
 inline void SPI_attachInterrupt();
-inline void detachInterrupt(); // Default
+inline void SPI_detachInterrupt(); // Default
 
 void SPI_begin(); // Default
 void SPI_end();

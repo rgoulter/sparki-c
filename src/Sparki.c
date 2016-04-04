@@ -22,8 +22,6 @@ static int8_t step_dir[3];                 // -1 = ccw, 1 = cw
 
 static uint8_t motor_speed[3];              // stores last set motor speed (0-100%)
 
-uint8_t pixel_color = WHITE;
-
 uint8_t ir_active = 1;
 
 uint8_t lcd_initialized = 0; // keeps track of whether LCD buffer has been loaded into memory or not
@@ -59,6 +57,9 @@ volatile uint8_t haltIRRead = 0;
 
 // values for the servo
 volatile int8_t servo_deg_offset = 0;
+
+//R These should be in the header at some point.
+void isr_irreflectance(int *);
 
 // SparkiClass sparki;
 
@@ -234,13 +235,9 @@ ISR(TIMER4_COMPA_vect)          // interrupt service routine that wraps a user d
     // Update the RGB leds
     isr_RGB();
 
+    //R *** IR Reflectance ***
     // IR Detection Switch
-    if(irSwitch == 0){
-        shift_outputs[1] &= 0xF7;
-    }
-    else{
-        shift_outputs[1] |= 0x08;
-    }
+    isr_irreflectance(&(shift_outputs[1]));
 
     //// Motor Control ////
     //   Determine what state the stepper coils are in

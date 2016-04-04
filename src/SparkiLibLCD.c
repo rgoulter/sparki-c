@@ -1,6 +1,13 @@
+//R XXX Would love to be more specific here.
+#include "Sparki.h"
+
 /***********************************************************************************
   Display Library
  ***********************************************************************************/
+
+uint8_t pixel_color = WHITE;
+
+extern uint8_t LCD_TYPE = 0; //R needed in the begin()
 
 #define ST7565_STARTBYTES 1
 

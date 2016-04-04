@@ -13,6 +13,16 @@ void begin_irreflectance() {
     irSwitch = 0;
 }
 
+// shift_output1 for the shift_outputs[1]
+void isr_irreflectance(int *shift_output1) {
+    if(irSwitch == 0){
+        *shift_output1 &= 0xF7;
+    }
+    else{
+        *shift_output1 |= 0x08;
+    }
+}
+
 void sparki_setMux(uint8_t A, uint8_t B, uint8_t C){
     digitalWrite(MUX_A, A);
     digitalWrite(MUX_B, B);

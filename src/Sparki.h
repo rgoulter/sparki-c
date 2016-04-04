@@ -1,12 +1,11 @@
 #ifndef Sparki_h
 #define Sparki_h
 
-//R Tmp. disable ACCEL, MAG
 //#define NO_LCD    // disables the LCD, frees up 3088 Bytes Flash Memory, 1k RAM
-#define NO_ACCEL  // disables the Accelerometer, frees up 598 Bytes Flash Memory
-#define NO_MAG    // disables the Magnetometer, frees up 2500 Bytes Flash Memory
+//#define NO_ACCEL  // disables the Accelerometer, frees up 598 Bytes Flash Memory
+//#define NO_MAG    // disables the Magnetometer, frees up 2500 Bytes Flash Memory
 
-// #include "Arduino.h"
+#include "Arduino.h"
 // #include "Print.h" //R Print is CPP, so can't use for C-only.
 
 #define SHIFTREG_LATCH      TXLED0   // PD5
@@ -177,8 +176,8 @@ int sparki_ping_single();
 int sparki_ping();
 void sparki_begin();
 void sparki_beep();
-void sparki_beep(int);
-void sparki_beep(int, int);
+void sparki_beep_freq(int);
+void sparki_beep_freq_time(int, int);
 void sparki_noBeep();
 void sparki_RGB(uint8_t,uint8_t,uint8_t);
 
@@ -237,36 +236,36 @@ void sparki_readAccelData();
 int sparki_initAccelerometer();
 
 // I2C functions //R Used in Accel
-void sparki_readi2cRegisters(uint8_t, int, uint8_t *, uint8_t);
-uint8_t sparki_readi2cRegister(uint8_t, uint8_t);
-void sparki_readi2cRegister(unsigned char, unsigned char, uint8_t);
+void    sparki_readi2cRegisters(uint8_t, int, uint8_t *, uint8_t);
+uint8_t sparki_readi2cRegister_read(uint8_t, uint8_t);
+void    sparki_readi2cRegister_write(unsigned char, unsigned char, uint8_t);
 
 // Servo Functions
 void sparki_startServoTimer();
 void sparki_servo(int);
-int8_t servo_deg_offset;
+int8_t sparki_servo_deg_offset;
 
 // high-level move functions
-void sparki_moveForward(float);
+void sparki_moveForward_cm(float);
 void sparki_stepForward(unsigned long);
 void sparki_moveForward();
 
-void sparki_moveBackward(float);
+void sparki_moveBackward_cm(float);
 void sparki_stepBackward(unsigned long);
 void sparki_moveBackward();
 
-void sparki_moveLeft(float);
+void sparki_moveLeft_deg(float);
 void sparki_stepLeft(unsigned long);
 void sparki_moveLeft();
 
-void sparki_moveRight(float);
+void sparki_moveRight_deg(float);
 void sparki_stepRight(unsigned long);
 void sparki_moveRight();
 
 void sparki_gripperOpen();
-void sparki_gripperOpen(float);
+void sparki_gripperOpen_cm(float);
 void sparki_gripperClose();
-void sparki_gripperClose(float);
+void sparki_gripperClose_cm(float);
 void sparki_gripperStop();
 
 void sparki_moveStop();
@@ -275,7 +274,7 @@ void sparki_speed(uint8_t);
 // individual motor control (non-blocking)
 // speed range is percent 0-100
 void sparki_motorRotate( int motor, int direction,  int speed);
-void sparki_motorRotate( int motor, int direction,  int speed, long steps);
+void sparki_motorRotate_steps( int motor, int direction,  int speed, long steps);
 void sparki_motorStop(int motor);
 
 // returns true if one or both motors a still stepping
@@ -302,7 +301,7 @@ void sparki_moveUpLine();
 
 uint8_t sparki_readPixel(uint8_t x, uint8_t y);
 
-void sparki_textWrite(const char* buffer, uint16_t len=0);
+void sparki_textWrite(const char* buffer, uint16_t len);
 
 /* Play nice with Arduino's Print class */ //R Which we don't need
 // virtual size_t write(uint8_t b) {

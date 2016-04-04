@@ -3,7 +3,7 @@
  * speed is percent 0-100
  */
 
-void sparki_moveRight(float deg)
+void sparki_moveRight_deg(float deg)
 {
     unsigned long steps = STEPS_PER_DEGREE*deg;
     if(deg == 0){
@@ -34,7 +34,7 @@ void sparki_moveRight()
     motorRotate(MOTOR_RIGHT, DIR_CCW, move_speed, ULONG_MAX);
 }
 
-void sparki_moveLeft(float deg)
+void sparki_moveLeft_deg(float deg)
 {
     unsigned long steps = STEPS_PER_DEGREE*deg;
     if(deg == 0){
@@ -65,7 +65,7 @@ void sparki_moveLeft()
     motorRotate(MOTOR_RIGHT, DIR_CW, move_speed, ULONG_MAX);
 }
 
-void sparki_moveForward(float cm)
+void sparki_moveForward_cm(float cm)
 {
     unsigned long steps = STEPS_PER_CM*cm;
     if(cm == 0){
@@ -96,7 +96,7 @@ void sparki_moveForward()
     motorRotate(MOTOR_RIGHT, DIR_CW, move_speed, ULONG_MAX);
 }
 
-void sparki_moveBackward(float cm)
+void sparki_moveBackward_cm(float cm)
 {
     unsigned long steps = STEPS_PER_CM*cm;
     if(cm == 0){
@@ -137,7 +137,7 @@ void sparki_gripperOpen()
 {
     motorRotate(MOTOR_GRIPPER, DIR_CCW, move_speed, ULONG_MAX);
 }
-void sparki_gripperOpen(float cm)
+void sparki_gripperOpen_cm(float cm)
 {
     motorRotate(MOTOR_GRIPPER, DIR_CCW, move_speed, (unsigned long)(cm*STEPS_PER_ARM_CM));
 }
@@ -146,7 +146,7 @@ void sparki_gripperClose()
 {
     motorRotate(MOTOR_GRIPPER, DIR_CW, move_speed, ULONG_MAX);
 }
-void sparki_gripperClose(float cm)
+void sparki_gripperClose_cm(float cm)
 {
     motorRotate(MOTOR_GRIPPER, DIR_CW, move_speed, (unsigned long)(cm*STEPS_PER_ARM_CM));
 }
@@ -166,7 +166,7 @@ void sparki_motorRotate(int motor, int direction, int speed)
     motorRotate(motor, direction, speed, ULONG_MAX);
 }
 
-void sparki_motorRotate(int motor, int direction, int speed, long steps)
+void sparki_motorRotate_steps(int motor, int direction, int speed, long steps)
 {
     //Serial.print("Motor ");Serial.print(motor); Serial.print(" rotate, dir= ");
     //Serial.print(direction); Serial.print(", steps= "); Serial.println(steps);
