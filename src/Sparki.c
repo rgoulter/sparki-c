@@ -1,8 +1,8 @@
 #include "Sparki.h"
-#include <inttypes.h>
+//#include <inttypes.h>
 #include <stdio.h>
 #include <string.h>
-#include <limits.h>
+//#include <limits.h>
 //#include <Arduino.h>
 
 #include <avr/eeprom.h>
@@ -18,9 +18,6 @@
 volatile uint8_t mag_buffer[RawMagDataLength];
 #endif
 
-static int8_t step_dir[3];                 // -1 = ccw, 1 = cw
-
-static uint8_t motor_speed[3];              // stores last set motor speed (0-100%)
 
 uint8_t ir_active = 1;
 
@@ -28,28 +25,14 @@ uint8_t lcd_initialized = 0; // keeps track of whether LCD buffer has been loade
 
 uint8_t LCD_TYPE = 0; // 0=small, 1=large
 
-static volatile uint8_t move_speed = 100;
-static volatile uint8_t speed_index[3];
-static volatile uint8_t speed_array[3][SPEED_ARRAY_LENGTH];
-// for each motor, how many 200uS waits between each step.
-// Cycles through an array of 10 of these counts to average
-// for better speed control
-
-static volatile int8_t step_index[3];       // index into _steps array
-static uint8_t _steps_right[9];                   // bytes defining stepper coil activations
-static uint8_t _steps_left[9];                   // bytes defining stepper coil activations
-static volatile uint32_t remainingSteps[3]; // number of steps before stopping motor
-static volatile uint32_t isRunning[3];      // tells if motor is running
-
-static volatile int speedCounter[3];      // variable used in maintaing speed
-static volatile int speedCount[3];      // what speedCount is set at when speed cycle resets
-
 static volatile uint8_t shift_outputs[3];      // tells if motor is running
 
 
 
 //R These should be in the header at some point.
 void begin_servo(void);
+void begin_motor(void);
+void isr_motor(int *);
 void isr_irreflectance(int *);
 
 // SparkiClass sparki;
@@ -101,27 +84,8 @@ void sparki_begin( ) {
 
     begin_beep();
     begin_irreflectance();
+    begin_motor();
 
-    // defining steps for the stepper motors
-    _steps_left[0] = 0x10;
-    _steps_left[1] = 0x30;
-    _steps_left[2] = 0x20;
-    _steps_left[3] = 0x60;
-    _steps_left[4] = 0x40;
-    _steps_left[5] = 0xC0;
-    _steps_left[6] = 0x80;
-    _steps_left[7] = 0x90;
-    _steps_left[8]  = 0x00;
-
-    _steps_right[0] = 0x01;
-    _steps_right[1] = 0x03;
-    _steps_right[2] = 0x02;
-    _steps_right[3] = 0x06;
-    _steps_right[4] = 0x04;
-    _steps_right[5] = 0x0C;
-    _steps_right[6] = 0x08;
-    _steps_right[7] = 0x09;
-    _steps_right[8] = 0x00;
 
 #ifdef NOLCD
     progmem_lcd_logo();
@@ -130,10 +94,6 @@ void sparki_begin( ) {
     updateLCD();
 #endif
 
-
-
-    // Setup initial Stepper settings
-    motor_speed[MOTOR_LEFT] = motor_speed[MOTOR_RIGHT] = motor_speed[MOTOR_GRIPPER] = move_speed;
 
     // Set up the scheduler routine to run every 200uS, based off Timer4 interrupt
     cli();          // disable all interrupts
@@ -216,49 +176,7 @@ ISR(TIMER4_COMPA_vect)          // interrupt service routine that wraps a user d
     isr_irreflectance(&(shift_outputs[1]));
 
     //// Motor Control ////
-    //   Determine what state the stepper coils are in
-    for(byte motor=0; motor<3; motor++){
-        if( remainingSteps[motor] > 1 ){ // check if finished stepping
-            // speedCount determines the stepping frequency
-            // interrupt speed (5khz) divided by speedCounter equals stepping freq
-            // 1khz is the maximum reliable frequency at 5v, so we use 5 as the top speed
-            // 5,000hz/5 = 1000hz = micro-stepping frequency
-            if(speedCounter[motor] == 0) {
-                step_index[motor] += step_dir[motor];
-                remainingSteps[motor]--;
-                speedCounter[motor] = speed_array[motor][speed_index[motor]];
-                speed_index[motor]++;
-                if(speed_index[motor] >= SPEED_ARRAY_LENGTH){
-                    speed_index[motor] = 0;
-                }
-            }
-            else{
-                speedCounter[motor] = speedCounter[motor]-1;
-            }
-
-        }
-        else {  // if this was the last step
-            remainingSteps[motor] = 0;
-            isRunning[motor] = false;
-            step_index[motor] = 8;
-            speedCounter[motor] = -1;
-        }
-
-        //   keep indicies from rolling over or under
-        if( step_index[motor] >= 8){
-            step_index[motor] = 0;
-        }
-        else if( step_index[motor] < 0){
-            step_index[motor] = 7;
-        }
-        if(isRunning[motor] == false){
-            step_index[motor] = 8;
-        }
-    }
-
-    shift_outputs[0] |= _steps_right[step_index[MOTOR_RIGHT]];
-    shift_outputs[0] |= _steps_left[step_index[MOTOR_GRIPPER]];
-    shift_outputs[1] |= _steps_left[step_index[MOTOR_LEFT]];
+    isr_motor(shift_outputs);
 
     if( (shift_old_0 != shift_outputs[0]) || (shift_old_1 != shift_outputs[1]) ){
         //return LCD chip select high
