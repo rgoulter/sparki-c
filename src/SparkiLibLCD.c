@@ -512,6 +512,22 @@ void sparki_textWrite(const char* buffer, uint16_t len) {
     }
 }
 
+void sparki_textWrite_sz(const char* buffer) {
+    uint16_t len = strlen(buffer);
+    sparki_textWrite(buffer, len);
+}
+
+void sparki_textWrite_i(int i) {
+    // INT32_MAX = 2147483647 (10 digits)
+    static char buf[16];
+    itoa(i, buf, 10);
+    sparki_textWrite_sz(buf);
+}
+
+void sparki_textWriteln() {
+    sparki_textWrite("\n", 1);
+}
+
 
 
 void sparki_drawString(uint8_t x, uint8_t line, char *c) {

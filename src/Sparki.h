@@ -303,6 +303,11 @@ uint8_t sparki_readPixel(uint8_t x, uint8_t y);
 
 void sparki_textWrite(const char* buffer, uint16_t len);
 
+// Helper utils, since C can't use the Print class' println(), etc.
+void sparki_textWrite_sz(const char* buffer);
+void sparki_textWrite_i(int i);
+void sparki_textWriteln();
+
 /* Play nice with Arduino's Print class */ //R Which we don't need
 // virtual size_t write(uint8_t b) {
 //     textWrite((const char *)&b, 1);
