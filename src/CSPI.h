@@ -32,12 +32,12 @@
 #define SPI_CLOCK_MASK   0x03  // SPR1 = bit 1, SPR0 = bit 0 on SPCR
 #define SPI_2XCLOCK_MASK 0x01  // SPI2X = bit 0 on SPSR
 
-inline uint8_t SPI_transfer(uint8_t _data);
+uint8_t SPI_transfer(uint8_t _data);
 
 // SPI Configuration methods
 
-inline void SPI_attachInterrupt();
-inline void SPI_detachInterrupt(); // Default
+void SPI_attachInterrupt();
+void SPI_detachInterrupt(); // Default
 
 void SPI_begin(); // Default
 void SPI_end();
