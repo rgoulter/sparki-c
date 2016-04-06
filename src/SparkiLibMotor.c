@@ -289,8 +289,14 @@ void sparki_motorRotate_steps(int motor, int direction, int speed, long steps)
         SREG = oldSREG; sei();
     }
     else{
-        int base_waits = 500/speed;
-        int remainder_waits = (int)((500.0/(float)(speed) - (float)(base_waits))*SPEED_ARRAY_LENGTH);
+        // The magic value here was 500,
+        // as per the remark in the ISR, 500 = 5 * max_speed; because
+        // of the max reliable frequency of stepper motors.
+        //
+        // Maybe something is off in the timing here, but motors don't work
+        // for that magic val; using 800 instead. (750 not quite high enough).
+        int base_waits = 800/speed;
+        int remainder_waits = (int)((800.0/(float)(speed) - (float)(base_waits))*SPEED_ARRAY_LENGTH);
 
         for(uint8_t i=0; i< (SPEED_ARRAY_LENGTH-remainder_waits); i++){
             speed_array[motor][i] = base_waits+1;
