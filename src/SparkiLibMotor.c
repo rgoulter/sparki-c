@@ -118,7 +118,7 @@ void sparki_moveRight_deg(float deg)
     }
     else{
         if(deg < 0){
-            sparki_moveLeft(-deg);
+            sparki_moveLeft_deg(-deg);
         }
         else{
             sparki_stepRight(steps);
@@ -180,7 +180,7 @@ void sparki_moveForward_cm(float cm)
     }
     else{
         if(cm < 0){
-            sparki_moveBackward(-cm);
+            sparki_moveBackward_cm(-cm);
         }
         else{
             sparki_stepForward(steps);
